@@ -1,15 +1,32 @@
 {
-  "name": "FOT Rezerv Treasury",
+  "name": "FOT Rezerv",
   "short_name": "FOT Rezerv",
   "description": "Oylik ish haqi fondini bank hisoblarida yig'ish va filiallarga taqsimlash",
   "lang": "uz",
   "display": "standalone",
-  "background_color": "#05080f",
-  "theme_color": "#05080f",
+  "background_color": "#0b0d11",
+  "theme_color": "#0b0d11",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ]
 }
