@@ -244,61 +244,161 @@ svg { flex: none; }
 @keyframes flash { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent), var(--shadow); } 100% { box-shadow: 0 0 0 12px transparent, var(--shadow); } }
 
 /* =========================================================
-   HERO + KPI
+   XULOSA (hukm + yo'l), BUGUNGI VAZIFA, SAVOLLAR, XULOSALAR, «AGAR…»
    ========================================================= */
-.hero { --tone: var(--text-3); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: center; padding: 26px 28px; overflow: hidden; }
-.hero[data-s="ok"], .hero[data-s="done"] { --tone: var(--ok-m); }
-.hero[data-s="warn"] { --tone: var(--warn-m); }
-.hero[data-s="risk"] { --tone: var(--bad-m); }
-.hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(420px 260px at 0% 0%, color-mix(in srgb, var(--tone) 9%, transparent), transparent 70%); transition: background .6s; }
-.ring { position: relative; width: 196px; height: 196px; z-index: 1; }
-.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
-.ring .trk { fill: none; stroke: var(--track); stroke-width: 12; }
-.ring .arc { fill: none; stroke: var(--tone); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1.3s var(--ease), stroke .6s; }
-.ring.done .arc { animation: ringDone 1.4s var(--ease); }
-@keyframes ringDone { 0% { stroke-width: 12; } 35% { stroke-width: 18; } 100% { stroke-width: 12; } }
-.ring-c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; z-index: 2; }
-.ring-pct { font-size: 44px; font-weight: 650; line-height: 1; letter-spacing: -.04em; }
-.ring-pct small { font-size: 19px; font-weight: 500; color: var(--text-3); margin-left: 2px; letter-spacing: 0; }
-.ring-l { font-size: 12px; color: var(--text-3); margin-top: 7px; }
-.ring-over { font-size: 11.5px; font-weight: 600; color: var(--ok); margin-top: 4px; }
-.hero-info { position: relative; z-index: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
-.hero-amt { font-size: clamp(26px, 2.5vw, 38px); font-weight: 650; line-height: 1.08; letter-spacing: -.035em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hero-amt .u { font-size: .42em; font-weight: 500; color: var(--text-3); letter-spacing: 0; margin-left: 7px; }
-.hero-of { font-size: 13px; color: var(--text-2); margin-top: -4px; }
-.hero-of b { color: var(--text); font-weight: 600; }
-.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
-.chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 8px; font-size: 12.5px; color: var(--text-2); background: var(--panel-2); border: 1px solid var(--line); }
-.chip svg { width: 14px; height: 14px; color: var(--tone, var(--text-3)); }
-.chip b { color: var(--text); font-weight: 600; }
-.chip.ok { --tone: var(--ok); } .chip.warn { --tone: var(--warn); } .chip.bad { --tone: var(--bad); } .chip.info { --tone: var(--info); }
-.chip.bad { border-color: color-mix(in srgb, var(--bad) 30%, var(--line)); }
+.sect { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; margin: 14px 2px -2px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.sect::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.help { width: 17px; height: 17px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: 11px; font-weight: 700; line-height: 1; color: var(--text-3); border: 1px solid var(--line-2); cursor: help; transition: .15s; vertical-align: 1px; }
+.help:hover, .help:focus-visible { color: var(--text); border-color: var(--line-3); }
+.lnk { display: inline; color: var(--accent); font-weight: 600; white-space: nowrap; }
+.lnk:hover { text-decoration: underline; }
 
-.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.kpi { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; }
-.kpi-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 26px; }
-.kpi-l { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 500; color: var(--text-2); }
-.kpi-ic { display: grid; place-items: center; color: var(--text-3); }
-.kpi-ic svg { width: 16px; height: 16px; }
-.kpi-v { font-size: clamp(21px, 2vw, 27px); font-weight: 650; line-height: 1.15; letter-spacing: -.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kpi-v .u { font-size: 12.5px; font-weight: 500; color: var(--text-3); letter-spacing: 0; margin-left: 6px; }
-.kpi-f { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-3); padding-top: 10px; margin-top: auto; border-top: 1px solid var(--line); }
-.kpi-f b { color: var(--text-2); font-weight: 600; white-space: nowrap; }
+/* Yuqori qism: chapda — hukm va xulosalar, o'ngda — bugungi vazifa va kiritish formasi */
+.top { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.top > #hero { grid-column: 1 / span 8; grid-row: 1 / span 2; }
+.top > #taskCard { grid-column: 9 / span 4; grid-row: 1; }
+.top > #formCard { grid-column: 9 / span 4; grid-row: 2 / span 2; }
+.top > #insCard { grid-column: 1 / span 8; grid-row: 3; }
+body.present .top > #hero { grid-row: 1; }
+body.present .top > #insCard { grid-column: 1 / -1; grid-row: 2; }
+.story { --tone: var(--text-3); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; padding: 28px 30px 26px; overflow: hidden; }
+.story[data-s="ok"], .story[data-s="done"] { --tone: var(--ok-m); }
+.story[data-s="warn"] { --tone: var(--warn-m); }
+.story[data-s="risk"] { --tone: var(--bad-m); }
+.story::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(520px 300px at 0% 0%, color-mix(in srgb, var(--tone) 10%, transparent), transparent 70%); transition: background .6s; }
+.story > * { position: relative; z-index: 1; }
+.story-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px; align-items: center; }
+.story .eyebrow { display: flex; align-items: center; gap: 9px; }
+.story .eyebrow::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--tone); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 22%, transparent); }
+.verdict { margin: 10px 0 10px; font-size: clamp(24px, 2.35vw, 33px); font-weight: 650; line-height: 1.14; letter-spacing: -.028em; text-wrap: balance; }
+.story-text { margin: 0; font-size: 15px; line-height: 1.65; color: var(--text-2); max-width: 64ch; text-wrap: pretty; }
+.story-text b { color: var(--text); font-weight: 600; }
+.ring { position: relative; width: 152px; height: 152px; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.ring .trk { fill: none; stroke: var(--track); stroke-width: 15; }
+.ring .arc { fill: none; stroke: var(--tone); stroke-width: 15; stroke-linecap: round; transition: stroke-dashoffset 1.3s var(--ease), stroke .6s; }
+.ring.done .arc { animation: ringDone 1.4s var(--ease); }
+@keyframes ringDone { 0% { stroke-width: 15; } 35% { stroke-width: 24; } 100% { stroke-width: 15; } }
+.ring-c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ring-pct { font-size: 36px; font-weight: 650; line-height: 1; letter-spacing: -.04em; }
+.ring-pct small { font-size: 17px; font-weight: 500; color: var(--text-3); margin-left: 1px; letter-spacing: 0; }
+.ring-l { font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fact { padding: 14px 16px 14px 0; min-width: 0; }
+.fact + .fact { padding-left: 18px; border-left: 1px solid var(--line); }
+.fact > span { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-3); }
+.fact > b { display: block; margin-top: 4px; font-size: clamp(16px, 1.5vw, 21px); font-weight: 650; letter-spacing: -.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fact small { font-size: 12px; font-weight: 500; color: var(--text-3); margin-left: 5px; letter-spacing: 0; }
+.path-h { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; color: var(--text-3); }
+.path-h span:last-child { color: var(--text-2); font-weight: 600; }
+.plan-note { margin: 34px 0 0; font-size: 13px; color: var(--text-2); }
+.plan-note b { color: var(--text); font-weight: 600; }
+.miles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.plan-note.hidden + .miles { margin-top: 22px; }
+.mile { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 14px 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel-2); }
+.mile-ic, .q-ic, .ins-ic { border-radius: 50%; display: grid; place-items: center; flex: none; color: var(--tone); background: color-mix(in srgb, var(--tone) 14%, transparent); }
+.mile-ic { width: 30px; height: 30px; }
+.mile-ic svg { width: 16px; height: 16px; }
+.mile-n { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-3); }
+.mile-a { font-size: 17px; font-weight: 650; letter-spacing: -.02em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mile-s { font-size: 13px; color: var(--text-2); margin-top: 4px; line-height: 1.45; }
+.mile-s b { color: var(--text); font-weight: 600; }
+.mile-d { text-align: right; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.mile-d small { display: block; font-size: 11.5px; font-weight: 400; color: var(--text-3); }
+
+.today, .today #task { display: flex; flex-direction: column; }
+body.present .today #task { flex: 1; justify-content: center; }
+body.present .today .task-box { padding: 26px; }
+body.present .today .task-v { font-size: clamp(26px, 2.5vw, 38px); }
+.task-box { display: flex; flex-direction: column; gap: 5px; padding: 18px 18px 16px; border-radius: var(--r); background: var(--ink); color: var(--ink-on); }
+.task-l { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; color: color-mix(in srgb, var(--ink-on) 62%, transparent); }
+.task-box .help { color: color-mix(in srgb, var(--ink-on) 60%, transparent); border-color: color-mix(in srgb, var(--ink-on) 30%, transparent); }
+.task-box .help:hover { color: var(--ink-on); border-color: var(--ink-on); }
+.task-v { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: clamp(23px, 2.05vw, 30px); font-weight: 700; line-height: 1.12; letter-spacing: -.03em; }
+.task-v small { font-size: 13px; font-weight: 500; letter-spacing: 0; color: color-mix(in srgb, var(--ink-on) 55%, transparent); }
+.task-v svg { width: 24px; height: 24px; }
+.task-why { font-size: 12.5px; color: color-mix(in srgb, var(--ink-on) 70%, transparent); }
+.task-box .meter { margin-top: 10px; background: color-mix(in srgb, var(--ink-on) 16%, transparent); }
+.task-box .meter > i { background: var(--ink-on); }
+.task-st { font-size: 12.5px; font-weight: 500; color: color-mix(in srgb, var(--ink-on) 82%, transparent); margin-top: 2px; }
+.task-box .btn { margin-top: 10px; align-self: flex-start; background: transparent; color: var(--ink-on); border-color: color-mix(in srgb, var(--ink-on) 32%, transparent); }
+.task-box .btn:hover:not(:disabled) { background: color-mix(in srgb, var(--ink-on) 9%, transparent); border-color: color-mix(in srgb, var(--ink-on) 55%, transparent); }
+.form-sep { display: flex; align-items: center; gap: 12px; margin-top: 20px; font-size: 13px; font-weight: 600; color: var(--text); }
+.form-sep::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.words b { color: var(--text-2); font-weight: 600; }
+
+.q { display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; }
+.q-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--text-2); }
+.q-a { display: flex; align-items: center; gap: 11px; font-size: 20px; font-weight: 650; letter-spacing: -.02em; line-height: 1.2; }
+.q-ic { width: 30px; height: 30px; }
+.q-ic svg { width: 16px; height: 16px; stroke-width: 2.6; }
+.q-w { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-2); min-height: 40px; }
+.q-w b { color: var(--text); font-weight: 600; }
+.q-rows { display: grid; gap: 6px; padding-top: 12px; margin-top: 2px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--text-3); }
+.q-rows div { display: flex; justify-content: space-between; gap: 10px; }
+.q-rows b { color: var(--text); font-weight: 600; text-align: right; }
+.cmp { display: grid; gap: 9px; padding-top: 12px; margin-top: 2px; border-top: 1px solid var(--line); }
+.cmp-r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 12.5px; color: var(--text-3); }
+.cmp-r b { color: var(--text-2); font-weight: 600; }
+.cmp-r .bar { grid-column: 1 / -1; height: 5px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.cmp-r .bar i { display: block; height: 100%; border-radius: inherit; background: var(--text-3); transition: width .8s var(--ease); }
+.cmp-r.need b { color: var(--text); }
+.cmp-r.need .bar i { background: var(--text); }
+.q .btn { align-self: flex-start; margin-top: auto; }
+.q .btn svg { width: 13px; height: 13px; margin-left: -2px; }
+
+.ins { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 10px; }
+.ins-r { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; padding: 13px 14px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel-2); font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+.ins-r b { color: var(--text); font-weight: 600; }
+.ins-ic { width: 28px; height: 28px; }
+.ins-ic svg { width: 15px; height: 15px; }
+
+.sim { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 16px 28px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.sim-q { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+.sim-val { display: flex; align-items: baseline; gap: 6px; margin-top: 6px; }
+.sim-val b { font-size: 26px; font-weight: 650; letter-spacing: -.03em; }
+.sim-val small { font-size: 12.5px; color: var(--text-3); }
+.range { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 26px; margin: 6px 0 8px; background: transparent; cursor: pointer; }
+.range:disabled { cursor: not-allowed; opacity: .4; }
+.range::-webkit-slider-runnable-track { height: 6px; border-radius: 99px; background: linear-gradient(to right, var(--accent) var(--p, 50%), var(--track) var(--p, 50%)); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%; background: var(--panel-solid); border: 2px solid var(--accent); box-shadow: 0 1px 5px rgba(0, 0, 0, .35); }
+.range::-moz-range-track { height: 6px; border-radius: 99px; background: var(--track); }
+.range::-moz-range-progress { height: 6px; border-radius: 99px; background: var(--accent); }
+.range::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--panel-solid); border: 2px solid var(--accent); }
+.sim-out { display: grid; gap: 11px; align-content: center; }
+.sim-r { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; font-size: 13.5px; line-height: 1.45; color: var(--text-2); }
+.sim-r b { color: var(--text); font-weight: 600; }
+.sim-r svg { width: 18px; height: 18px; color: var(--tone); margin-top: 1px; }
+.sim.off .sim-ctl { opacity: .55; }
+.tip-text { font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+
+/* «Dastur qanday ishlaydi?» oynasi */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.step { padding: 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel-2); }
+.step-n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--ink-on); font-size: 13px; font-weight: 700; }
+.step h5 { margin: 10px 0 4px; font-size: 14.5px; font-weight: 650; }
+.step p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.step .now { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--text-3); }
+.step .now b { color: var(--text); font-weight: 600; }
+.gloss { margin: 0; display: grid; }
+.gloss div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.gloss dt { font-weight: 600; }
+.gloss dd { margin: 0; color: var(--text-2); line-height: 1.5; }
+.gloss dd b { color: var(--text); font-weight: 600; }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr; } .gloss div { grid-template-columns: 1fr; gap: 2px; } }
+
 .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; line-height: 1; padding: 4px 8px; border-radius: 999px; white-space: nowrap; color: var(--text-2); background: var(--panel-2); border: 1px solid var(--line); }
 .badge.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); border-color: color-mix(in srgb, var(--ok) 26%, transparent); }
 .badge.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); border-color: color-mix(in srgb, var(--warn) 28%, transparent); }
 .badge.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); border-color: color-mix(in srgb, var(--bad) 30%, transparent); }
 .badge.info { color: var(--info); background: color-mix(in srgb, var(--info) 10%, transparent); border-color: color-mix(in srgb, var(--info) 26%, transparent); }
-.badge.vio { color: var(--text-2); }
 .meter { height: 5px; border-radius: 99px; background: var(--track); overflow: hidden; }
 .meter > i { display: block; height: 100%; border-radius: inherit; background: var(--tone, var(--text-2)); transition: width 1s var(--ease); }
 
 /* =========================================================
    MILESTONE TRACK + VAULTS
    ========================================================= */
-.frac { font-size: 20px; font-weight: 650; letter-spacing: -.03em; }
-.frac span { color: var(--text-3); font-size: 14px; font-weight: 500; }
-.track { --tone: var(--text-3); position: relative; height: 10px; border-radius: 99px; background: var(--track); margin: 36px 2px 10px; }
+.track { --tone: var(--text-3); position: relative; height: 12px; border-radius: 99px; background: var(--track); margin: 34px 2px 0; }
 .track[data-s="ok"], .track[data-s="done"] { --tone: var(--ok-m); }
 .track[data-s="warn"] { --tone: var(--warn-m); }
 .track[data-s="risk"] { --tone: var(--bad-m); }
@@ -310,8 +410,7 @@ svg { flex: none; }
 .track-mark.adv span { color: var(--text); }
 .track-mark.plan { opacity: .9; }
 .track-mark.plan span { top: calc(100% + 5px); bottom: auto; }
-.track-scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-3); margin: 36px 2px 20px; }
-.vaults { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.vaults { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .vault { position: relative; padding: 15px 16px 14px 19px; border-radius: var(--r); background: var(--panel-2); border: 1px solid var(--line); overflow: hidden; }
 .vault::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--fc); }
 .vault-h { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
@@ -359,8 +458,7 @@ textarea.input { height: auto; min-height: 180px; padding: 12px 14px; font: 500 
 .quick button.hl { color: var(--text); border-color: var(--line-3); }
 .words { font-size: 12px; color: var(--text-3); min-height: 18px; }
 .words::first-letter { text-transform: uppercase; }
-.form-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); font-size: 12px; color: var(--text-3); }
-.form-foot b { display: block; font-size: 13.5px; font-weight: 600; color: var(--text); margin-top: 2px; }
+
 .submit { height: 46px; font-size: 14px; border-radius: 11px; }
 .edit-banner { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 600; color: var(--warn); background: color-mix(in srgb, var(--warn) 9%, transparent); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent); }
 .edit-banner > span { display: inline-flex; align-items: center; gap: 7px; }
@@ -377,7 +475,7 @@ button.day:hover { border-color: var(--line-3); z-index: 2; }
 .day .dv { font-size: 13px; font-weight: 600; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; z-index: 1; }
 .day .dv small { font-size: 11px; color: var(--text-3); font-weight: 500; }
 .day .dv small small.u { font-size: inherit; }
-.day .fill { position: absolute; left: 0; right: 0; bottom: 0; height: var(--h, 0%); background: color-mix(in srgb, var(--tone) 16%, transparent); border-top: 2px solid color-mix(in srgb, var(--tone) 75%, transparent); transition: height .8s var(--ease); pointer-events: none; }
+.day .fill { position: absolute; left: 0; bottom: 0; height: 3px; width: var(--h, 0%); background: var(--tone); transition: width .8s var(--ease); pointer-events: none; }
 .day:not(.full):not(.part) .fill { display: none; }
 .day .dots { display: flex; gap: 3px; }
 .day .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--fc); }
@@ -387,6 +485,7 @@ button.day:hover { border-color: var(--line-3); z-index: 2; }
 .day.off .dn { color: var(--text-3); }
 .day.full { --tone: var(--ok-m); }
 .day.part { --tone: var(--warn-m); }
+.day.full, .day.part { background: color-mix(in srgb, var(--tone) 10%, var(--day-bg)); border-color: color-mix(in srgb, var(--tone) 28%, var(--line)); }
 .day.miss { border-color: color-mix(in srgb, var(--bad) 38%, var(--line)); }
 .day.miss .tag { color: var(--bad); background: color-mix(in srgb, var(--bad) 11%, transparent); }
 .day.future .dv { color: var(--text-3); font-weight: 500; }
@@ -425,19 +524,6 @@ button.day:hover { border-color: var(--line-3); z-index: 2; }
 @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 .chart .hov { fill: transparent; cursor: crosshair; }
 .chart .xh { stroke: var(--text-3); stroke-width: 1; opacity: 0; pointer-events: none; }
-.donut-wrap { position: relative; width: 200px; height: 200px; margin: 6px auto 16px; }
-.donut-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
-.donut-wrap .seg-arc { fill: none; stroke-width: 18; transition: stroke-width .2s; cursor: pointer; }
-.donut-wrap .seg-arc:hover { stroke-width: 22; }
-.donut-c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none; }
-.donut-c b { font-size: 22px; font-weight: 650; letter-spacing: -.03em; }
-.donut-c span { font-size: 12px; color: var(--text-3); }
-.dl { display: grid; gap: 2px; }
-.dl-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 9px 2px; border-top: 1px solid var(--line); font-size: 13px; }
-.dl-row i { width: 10px; height: 10px; border-radius: 3px; background: var(--fc); }
-.dl-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); }
-.dl-row .v { text-align: right; font-weight: 600; }
-.dl-row .v small { display: block; font-size: 11.5px; font-weight: 400; color: var(--text-3); }
 
 /* =========================================================
    TABLES
@@ -631,9 +717,9 @@ kbd { font: 600 11px var(--mono); padding: 3px 7px; border-radius: 6px; border: 
 .present-bar .clock { font-size: 26px; font-weight: 650; letter-spacing: -.03em; }
 body.present .present-bar { display: flex; }
 body.present .edit-only { display: none !important; }
-body.present #calCard { grid-column: span 12; }
+
 body.present .tabs-row .tabs { display: none; }
-body.present .hero { padding: 30px; }
+
 
 footer.foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-3); }
 footer.foot button { color: var(--text-2); font-weight: 500; }
@@ -646,6 +732,8 @@ footer.foot button:hover { color: var(--text); }
    ========================================================= */
 @media (max-width: 1200px) {
   .c-5, .c-6, .c-7, .c-8, .c-4 { grid-column: span 12; }
+  .q.c-4 { grid-column: span 4; }
+  .top > #hero, .top > #taskCard, .top > #formCard, .top > #insCard, body.present .top > #hero, body.present .top > #insCard { grid-column: 1 / -1; grid-row: auto; }
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
@@ -654,9 +742,13 @@ footer.foot button:hover { color: var(--text); }
   .month { order: 3; margin: 0; width: 100%; justify-content: space-between; }
   .actions { margin-left: auto; }
   .brand-s { display: none; }
-  .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-  .hero-info { align-items: center; width: 100%; }
-  .chips { justify-content: center; }
+  .q.c-4 { grid-column: span 12; }
+  .story { padding: 22px 20px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fact:nth-child(3) { padding-left: 0; border-left: 0; }
+  .fact:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .miles { grid-template-columns: 1fr; }
+  .sim { grid-template-columns: 1fr; }
   .stats, .stats.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .settings { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
   .snav { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
@@ -664,9 +756,17 @@ footer.foot button:hover { color: var(--text); }
   .row3 { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 640px) {
-  .grid { gap: 12px; }
+  .grid, .top { gap: 12px; }
   .card { padding: 16px; border-radius: 14px; }
-  .kpis { grid-template-columns: 1fr; gap: 12px; }
+  .story-top { grid-template-columns: 1fr; gap: 18px; }
+  .story .ring { order: -1; width: 132px; height: 132px; }
+  .story .ring-pct { font-size: 31px; }
+  .verdict { font-size: 23px; }
+  .fact > b { font-size: 16px; }
+  .fact small.cu { display: none; }
+  .mile { grid-template-columns: auto minmax(0, 1fr); }
+  .mile-d { grid-column: 2; text-align: left; }
+  .mile-d small { display: inline; margin-right: 6px; }
   .actions .btn .lbl { display: none; }
   .actions .btn.has-lbl { width: 36px; padding: 0; }
   .tab { padding: 0 12px; font-size: 13px; }
@@ -677,8 +777,7 @@ footer.foot button:hover { color: var(--text); }
   .day .tag, .day .dots, .day .dv small.u { display: none; }
   .topbar { position: relative; }
   .card-h > kbd { display: none; }
-  .ring { width: 172px; height: 172px; }
-  .ring-pct { font-size: 38px; }
+
   .search .input { width: 100%; }
   .search { flex: 1; min-width: 160px; }
   .row3, .row2, .keys { grid-template-columns: 1fr; }
@@ -753,6 +852,7 @@ footer.foot button:hover { color: var(--text); }
         </div>
         <button class="btn icon" data-action="theme" id="themeBtn" aria-label="Yorug' / qorong'i mavzu" title="Mavzu (T)"><i data-ic="sun"></i></button>
         <button class="btn has-lbl" data-action="present" id="presentBtn" title="Taqdimot rejimi — to'liq ekran, faqat ko'rish (P)"><i data-ic="present"></i><span class="lbl">Taqdimot</span></button>
+        <button class="btn icon" data-action="help" aria-label="Dastur qanday ishlaydi?" title="Dastur qanday ishlaydi?"><i data-ic="help"></i></button>
         <button class="btn icon" data-action="open-settings" data-tab="general" aria-label="Sozlamalar" title="Sozlamalar"><i data-ic="gear"></i></button>
       </div>
     </div>
@@ -774,9 +874,9 @@ footer.foot button:hover { color: var(--text); }
     <!-- Tabs + health -->
     <div class="tabs-row">
       <div class="tabs" role="tablist" aria-label="Bo'limlar">
-        <button class="tab" role="tab" id="tab-command" data-action="tab" data-tab="command" aria-selected="true" title="Boshqaruv markazi (1)"><i data-ic="grid"></i>Boshqaruv markazi</button>
-        <button class="tab" role="tab" id="tab-payout" data-action="tab" data-tab="payout" aria-selected="false" title="Bank taqsimoti (2)"><i data-ic="network"></i>Bank taqsimoti <span class="pill" id="tabFlow">3 → 33</span></button>
-        <button class="tab" role="tab" id="tab-branches" data-action="tab" data-tab="branches" aria-selected="false" title="Filiallar reestri (3)"><i data-ic="building"></i>Filiallar reestri <span class="pill" id="tabBranches">33</span></button>
+        <button class="tab" role="tab" id="tab-command" data-action="tab" data-tab="command" aria-selected="true" title="Yig'ish — pul qanday yig'ilyapti (1)"><i data-ic="grid"></i>Yig'ish <span class="pill" id="tabPct">0%</span></button>
+        <button class="tab" role="tab" id="tab-payout" data-action="tab" data-tab="payout" aria-selected="false" title="To'lash — filiallarga to'lovlar (2)"><i data-ic="network"></i>To'lash <span class="pill" id="tabFlow" title="Oyligi to'liq to'langan filiallar">0/33</span></button>
+        <button class="tab" role="tab" id="tab-branches" data-action="tab" data-tab="branches" aria-selected="false" title="Filiallar — kimga qancha oylik kerak (3)"><i data-ic="building"></i>Filiallar <span class="pill" id="tabBranches">33</span></button>
       </div>
       <div class="health" id="health" data-s="idle" role="status" aria-live="polite"><span class="dot"></span><span id="healthText">Tahlil qilinmoqda…</span></div>
     </div>
@@ -791,93 +891,79 @@ footer.foot button:hover { color: var(--text); }
     <!-- ================= VIEW 1: COMMAND CENTER ================= -->
     <section id="view-command" class="view" role="tabpanel" aria-labelledby="tab-command">
       <div class="grid">
-        <!-- HERO -->
-        <div class="card hero c-6" id="hero">
-          <div class="ring" id="ring">
-            <svg viewBox="0 0 220 220" aria-hidden="true">
-              <circle class="trk" cx="110" cy="110" r="92"/>
-              <circle class="arc" id="ringArc" cx="110" cy="110" r="92"/>
-              <g id="ringMarks"></g>
-            </svg>
-            <div class="ring-c">
-              <div class="ring-pct"><span id="ringPct">0</span><small>%</small></div>
-              <div class="ring-l">yig'ildi</div>
-              <div class="ring-over hidden" id="ringOver"></div>
+        <!-- XULOSA: bitta jumlada holat, oddiy tilda izoh, yo'l -->
+        <div class="top">
+        <div class="card story" id="hero" data-s="idle">
+          <div class="story-top">
+            <div class="story-main">
+              <div class="eyebrow" id="heroEyebrow">—</div>
+              <h2 class="verdict" id="vHead">—</h2>
+              <p class="story-text" id="vText"></p>
+            </div>
+            <div class="ring" id="ring">
+              <svg viewBox="0 0 220 220" aria-hidden="true">
+                <circle class="trk" cx="110" cy="110" r="92"/>
+                <circle class="arc" id="ringArc" cx="110" cy="110" r="92"/>
+                <g id="ringMarks"></g>
+              </svg>
+              <div class="ring-c">
+                <div class="ring-pct"><span id="ringPct">0</span><small>%</small></div>
+                <div class="ring-l">yig'ildi</div>
+              </div>
             </div>
           </div>
-          <div class="hero-info">
-            <div class="eyebrow" id="heroEyebrow">—</div>
-            <div class="hero-amt"><span id="heroAmt">0</span><span class="u" id="heroUnit">so'm</span></div>
-            <div class="hero-of" id="heroOf">—</div>
-            <div class="chips" id="heroChips"></div>
+          <div class="facts">
+            <div class="fact"><span>Jami kerak <button type="button" class="help" data-tip="Oylik fondi — shu oyda barcha filiallar xodimlariga beriladigan oylik puli. Har bir filial uchun «Filiallar» bo'limida kiritiladi.">?</button></span><b><span id="kFund">0</span><small class="cu">so'm</small></b></div>
+            <div class="fact"><span>Yig'ildi</span><b><span id="heroAmt">0</span><small class="cu">so'm</small></b></div>
+            <div class="fact"><span>Yana kerak</span><b><span id="kRem">0</span><small class="cu">so'm</small></b></div>
+            <div class="fact"><span><span id="kDaysLbl">Bank kuni qoldi</span> <button type="button" class="help" data-tip="Bank kuni — banklar ishlaydigan kun: dushanbadan jumagacha, bayramlardan tashqari. Pul faqat shu kunlari o'tkaziladi.">?</button></span><b><span id="kDaysLeft">0</span><small id="kDaysOf"></small></b></div>
           </div>
-        </div>
-
-        <!-- KPI -->
-        <div class="kpis c-6">
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-l"><span class="kpi-ic"><i data-ic="building"></i></span>Jami oylik fondi</span><span class="badge" id="kFundBadge">33 filial</span></div>
-            <div class="kpi-v"><span id="kFund">0</span><span class="u cu">so'm</span></div>
-            <div class="kpi-f"><span>Avans (o'rt. <span id="kAdvPct">18</span>%)</span><b id="kAdvTarget">0</b></div>
-          </div>
-          <div class="card kpi" id="kRemCard">
-            <div class="kpi-top"><span class="kpi-l"><span class="kpi-ic"><i data-ic="hourglass"></i></span>Qolgan kamomad</span><span class="badge" id="kRemBadge">0%</span></div>
-            <div class="kpi-v"><span id="kRem">0</span><span class="u cu">so'm</span></div>
-            <div class="meter"><i id="kRemMeter" style="width:0%"></i></div>
-            <div class="kpi-f"><span id="kDaysLbl">Qolgan bank kuni</span><b id="kDaysLeft">0 kun</b></div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-l"><span class="kpi-ic"><i data-ic="zap"></i></span>Bugungi norma</span><span class="badge" id="kNormBadge">—</span></div>
-            <div class="kpi-v"><span id="kNorm">0</span><span class="u cu">so'm</span></div>
-            <div class="kpi-f"><span>Boshlang'ich reja / kun</span><b id="kBase">0</b></div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-l"><span class="kpi-ic"><i data-ic="trend"></i></span>Oy oxiri prognozi</span><span class="badge" id="kFcBadge">Kutilmoqda</span></div>
-            <div class="kpi-v"><span id="kFc">—</span><span class="u cu">so'm</span></div>
-            <div class="kpi-f"><span>O'rtacha kunlik tushum</span><b id="kAvg">—</b></div>
-          </div>
-        </div>
-
-        <!-- MILESTONES + VAULTS -->
-        <div class="card c-12" id="milestoneCard">
-          <div class="card-h">
-            <div>
-              <h3 class="card-t">Ikki bosqichli rezerv marrasi</h3>
-              <p class="card-s">1-marra: Avans (o'rtacha <span class="advPctT">18</span>%) · 2-marra: to'liq oylik fondi (100%)</p>
+          <div class="path">
+            <div class="path-h"><span>Yo'l: boshidan to'liq fondgacha</span><span id="pathPct"></span></div>
+            <div class="track" id="track">
+              <div class="track-zone" id="trackZone"></div>
+              <div class="track-fill" id="trackFill" style="width:0"></div>
+              <div class="track-mark adv" id="trackAdv"><span>Avans</span></div>
+              <div class="track-mark plan hidden" id="trackPlan"><span>Reja</span></div>
             </div>
-            <div class="frac" id="bigFrac">0 <span>/ 0</span></div>
+            <p class="plan-note" id="planNote"></p>
+            <div class="miles" id="miles"></div>
           </div>
-          <div class="track" id="track">
-            <div class="track-zone" id="trackZone"></div>
-            <div class="track-fill" id="trackFill" style="width:0"></div>
-            <div class="track-mark adv" id="trackAdv"><span>Avans 18%</span></div>
-            <div class="track-mark plan hidden" id="trackPlan"><span>Reja</span></div>
-          </div>
-          <div class="track-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-          <div class="vaults" id="vaults"></div>
         </div>
 
-        <!-- ENTRY FORM -->
-        <div class="card c-4 edit-only" id="formCard">
+        <!-- BUGUNGI VAZIFA -->
+        <div class="card today" id="taskCard">
           <div class="card-h" style="margin-bottom:14px">
             <div>
-              <h3 class="card-t" id="formTitle">Kunlik rezerv kiritish</h3>
-              <p class="card-s">Bank o'tkazmasini firmaning hisob raqamiga yozing</p>
+              <h3 class="card-t">Bugun nima qilish kerak?</h3>
+              <p class="card-s" id="taskDate">—</p>
             </div>
-            <kbd title="Summaga o'tish">N</kbd>
+          </div>
+          <div id="task"></div>
+        </div>
+
+        <!-- KIRITISH FORMASI -->
+        <div class="card edit-only" id="formCard">
+          <div class="card-h" style="margin-bottom:14px">
+            <div>
+              <h3 class="card-t" id="formTitle">Bank o'tkazmasini yozish</h3>
+              <p class="card-s">Pul qaysi kuni, qaysi hisobga va qancha tushganini kiriting</p>
+            </div>
+            <kbd title="Summa maydoniga o'tish">N</kbd>
           </div>
           <form class="form" id="entryForm" novalidate autocomplete="off">
             <div class="edit-banner hidden" id="editBanner"><span><i data-ic="edit"></i>Yozuv tahrirlanmoqda</span><button type="button" class="btn sm ghost" data-action="cancel-edit">Bekor qilish</button></div>
             <div class="field">
-              <label class="label" for="inpDate">Bank operatsiya sanasi <span class="date-meta" id="dateMeta"></span></label>
+              <label class="label" for="inpDate">Qaysi kuni? <span class="date-meta" id="dateMeta"></span></label>
               <input type="date" id="inpDate" class="input" required>
+              <div class="words">Shu sanada kiritilgan: <b id="ffDay">0</b></div>
             </div>
             <div class="field">
-              <span class="label">Qaysi firma hisobiga tushdi</span>
+              <span class="label">Qaysi hisobga tushdi?</span>
               <div class="firm-pick" id="firmPick" role="group" aria-label="Firma"></div>
             </div>
             <div class="field">
-              <label class="label" for="inpAmount">Summa <span class="hint" id="amtHint">0 mln</span></label>
+              <label class="label" for="inpAmount">Qancha? <span class="hint" id="amtHint">0 mln</span></label>
               <div class="amount-wrap">
                 <input type="text" id="inpAmount" class="input amount" inputmode="numeric" placeholder="0" required aria-describedby="amtWords">
                 <span class="cur">so'm</span>
@@ -887,30 +973,67 @@ footer.foot button:hover { color: var(--text); }
                 <button type="button" data-action="quick-add" data-v="10000000">+10 mln</button>
                 <button type="button" data-action="quick-add" data-v="50000000">+50 mln</button>
                 <button type="button" data-action="quick-add" data-v="100000000">+100 mln</button>
-                <button type="button" class="hl" data-action="quick-norm" title="Bugungi dinamik norma">Norma</button>
-                <button type="button" data-action="quick-rest" title="Qolgan butun kamomad">Qoldiq</button>
+                <button type="button" class="hl" data-action="quick-norm" title="Bugun ajratilishi kerak bo'lgan summa">Bugungi vazifa</button>
+                <button type="button" data-action="quick-rest" title="Oy oxirigacha yig'ilishi kerak bo'lgan butun qoldiq">Hammasi</button>
                 <button type="button" data-action="quick-clear" aria-label="Tozalash">✕</button>
               </div>
             </div>
             <div class="field">
-              <label class="label" for="inpNote">Izoh / to'lov asosi</label>
+              <label class="label" for="inpNote">Izoh <span class="hint">ixtiyoriy</span></label>
               <input type="text" id="inpNote" class="input" list="noteList" placeholder="Masalan: savdo tushumidan ajratildi" maxlength="160">
               <datalist id="noteList"></datalist>
             </div>
-            <button type="submit" class="btn primary submit" id="submitBtn"><i data-ic="plus"></i><span>Rezervga kiritish</span></button>
-            <div class="form-foot">
-              <div>Bugungi norma<b id="ffNorm">0</b></div>
-              <div>Shu sanada kiritilgan<b id="ffDay">0</b></div>
-            </div>
+            <button type="submit" class="btn primary submit" id="submitBtn"><i data-ic="plus"></i><span>Kiritish</span></button>
           </form>
         </div>
 
-        <!-- CALENDAR -->
+        <!-- XULOSALAR -->
+        <div class="card" id="insCard">
+          <div class="card-h" style="margin-bottom:14px">
+            <div>
+              <h3 class="card-t">Nimaga e'tibor berish kerak?</h3>
+              <p class="card-s">Dastur ma'lumotlardan o'zi chiqargan xulosalar — eng muhimi birinchi</p>
+            </div>
+          </div>
+          <div class="ins" id="insights"></div>
+        </div>
+        </div>
+
+        <!-- UCH ASOSIY SAVOL -->
+        <div class="sect">Uch asosiy savol</div>
+        <div class="card q c-4" id="q1"></div>
+        <div class="card q c-4" id="q2"></div>
+        <div class="card q c-4" id="q3"></div>
+
+        <!-- TAHLIL VA BASHORAT -->
+        <div class="sect">Tahlil va bashorat</div>
+        <div class="card c-12">
+          <div class="card-h">
+            <div>
+              <h3 class="card-t">Pul qanday yig'ilyapti?</h3>
+              <p class="card-s">Yuqorida — oy boshidan beri yig'ilgan pul va reja; pastda — har kungi tushum, hisoblar bo'yicha</p>
+            </div>
+            <div class="legend" id="trajLegend"></div>
+          </div>
+          <div class="chart" id="trajChart"></div>
+          <div class="sim" id="simCard">
+            <div class="sim-ctl">
+              <div class="sim-q">Agar har bank kuni shuncha ajratilsa <button type="button" class="help" data-tip="Surgichni suring: dastur shu kunlik summa bilan avans va to'liq fond qachon yig'ilishini hisoblaydi. Grafikdagi ko'k chiziq ham shunga qarab o'zgaradi. Bu faqat hisob-kitob — hech narsa saqlanmaydi.">?</button></div>
+              <div class="sim-val"><b id="simVal">0</b><small class="cu">so'm</small></div>
+              <input type="range" class="range" id="simRange" min="0" max="200" step="1" value="100" aria-label="Kunlik ajratma (taxminiy hisob uchun)">
+              <div class="quick" id="simPresets"></div>
+            </div>
+            <div class="sim-out" id="simOut"></div>
+          </div>
+        </div>
+
+        <!-- KUNMA-KUN VA HISOBLAR -->
+        <div class="sect">Kunma-kun va hisoblar</div>
         <div class="card c-8" id="calCard">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Bank kalendari <span class="badge" id="calBadge">0 bank kuni</span></h3>
-              <p class="card-s" id="calSub">Kunni bosing — shu sana uchun kiritish formasi tayyorlanadi</p>
+              <h3 class="card-t">Qaysi kuni qancha tushdi? <span class="badge" id="calBadge">0 bank kuni</span></h3>
+              <p class="card-s" id="calSub">Kunni bosing — o'sha sana kiritish formasiga yoziladi</p>
             </div>
             <div class="tools edit-only">
               <button class="btn sm" data-action="cal-edit" id="calEditBtn"><i data-ic="calendar"></i><span>Kalendarni tahrirlash</span></button>
@@ -933,37 +1056,22 @@ footer.foot button:hover { color: var(--text); }
             <div class="cal-stats"><span>O'tdi: <b id="csDone">0</b></span><span>Qoldi: <b id="csLeft">0</b></span><span>Tushumsiz: <b id="csMiss">0</b></span></div>
           </div>
         </div>
-
-        <!-- TRAJECTORY -->
-        <div class="card c-8">
+        <div class="card c-4" id="acctCard">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Rezerv yig'ish traektoriyasi</h3>
-              <p class="card-s">Yuqorida — kumulyativ yig'ilgan va reja; pastda — kunlik tushumlar firmalar kesimida</p>
-            </div>
-            <div class="legend" id="trajLegend"></div>
-          </div>
-          <div class="chart" id="trajChart"></div>
-        </div>
-
-        <!-- DONUT -->
-        <div class="card c-4">
-          <div class="card-h" style="margin-bottom:6px">
-            <div>
-              <h3 class="card-t">Firmalar kesimida</h3>
-              <p class="card-s">Yig'ilgan mablag' qaysi hisobga tushgani</p>
+              <h3 class="card-t">Pul qaysi hisobda turibdi?</h3>
+              <p class="card-s">Har bir hisobga qancha tushgan, filiallarga qancha to'langan va hozir qancha qolgan</p>
             </div>
           </div>
-          <div class="donut-wrap" id="donut"></div>
-          <div class="dl" id="donutLegend"></div>
+          <div class="vaults" id="vaults"></div>
         </div>
 
         <!-- LEDGER -->
         <div class="card c-12" id="ledgerCard">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Bank o'tkazmalari jurnali <span class="badge" id="ledgerCount">0</span></h3>
-              <p class="card-s">Tanlangan oy bo'yicha barcha rezerv kiritmalari — kunlar bo'yicha guruhlangan</p>
+              <h3 class="card-t">Barcha kiritmalar <span class="badge" id="ledgerCount">0</span></h3>
+              <p class="card-s">Shu oyda yozilgan barcha bank o'tkazmalari — kunlar bo'yicha</p>
             </div>
             <div class="tools">
               <div class="search"><i data-ic="search"></i><input type="search" class="input" id="ledgerSearch" placeholder="Izoh, firma, summa…" aria-label="Jurnaldan qidirish"></div>
@@ -987,24 +1095,25 @@ footer.foot button:hover { color: var(--text); }
         <div class="card c-12">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Bank taqsimoti: <span id="payTitle">3 ta firmadan → 33 ta filialga</span></h3>
-              <p class="card-s">To'lov topshiriqnomalarini rejalashtirish, firmalarga avtomatik taqsimlash va nazorat qilish</p>
+              <h3 class="card-t">Filiallarga to'lash <span class="badge" id="payTitle">3 ta hisobdan → 33 ta filialga</span></h3>
+              <p class="card-s">Kimga to'landi, kimga hali yo'q va bunga pul yetadimi</p>
             </div>
             <div class="seg lg" role="group" aria-label="To'lov bosqichi" id="stageSeg">
               <button data-action="stage" data-v="overview" aria-pressed="false">Umumiy</button>
               <button data-action="stage" data-v="advance" aria-pressed="true">1. Avans <span class="pc"><span class="advPctT">18</span>%</span></button>
-              <button data-action="stage" data-v="remainder" aria-pressed="false">2. Asosiy <span class="pc"><span class="remPctT">82</span>%</span></button>
-              <button data-action="stage" data-v="full" aria-pressed="false">Bir martalik <span class="pc">100%</span></button>
+              <button data-action="stage" data-v="remainder" aria-pressed="false">2. Asosiy qism <span class="pc"><span class="remPctT">82</span>%</span></button>
+              <button data-action="stage" data-v="full" aria-pressed="false">Bir yo'la <span class="pc">100%</span></button>
             </div>
           </div>
+          <p class="story-text" id="payStory" style="margin:0 0 16px;max-width:none"></p>
           <div class="stats" id="payStats"></div>
         </div>
 
         <div class="card c-12" id="payAllocCard">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Firmalar bo'yicha yuklama</h3>
-              <p class="card-s">Har bir hisobdagi qoldiq va unga biriktirilgan to'lanmagan o'tkazmalar</p>
+              <h3 class="card-t">Qaysi hisobdan qancha to'lanadi?</h3>
+              <p class="card-s">Har bir hisobda hozir qancha pul bor va undan qancha to'lash rejalashtirilgan</p>
             </div>
             <div class="tools edit-only">
               <button class="btn sm" data-action="pay-reset" title="Qo'lda tanlanganlarni bekor qilib, eng katta qoldiqli firmalarga qayta taqsimlash"><i data-ic="refresh"></i>Avtomatik taqsimlash</button>
@@ -1017,7 +1126,7 @@ footer.foot button:hover { color: var(--text); }
         <div class="card c-12" id="payFlowCard">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Pul oqimi xaritasi</h3>
+              <h3 class="card-t">Pul oqimi: kim kimga to'laydi</h3>
               <p class="card-s">Qaysi firma qaysi filialga qancha o'tkazadi — to'q chiziq: to'langan, och chiziq: rejada</p>
             </div>
           </div>
@@ -1027,7 +1136,7 @@ footer.foot button:hover { color: var(--text); }
         <div class="card c-12">
           <div class="card-h">
             <div>
-              <h3 class="card-t">To'lov reestri · <span id="payRegStage">Avans</span> <span class="badge" id="payCount">0</span></h3>
+              <h3 class="card-t">To'lovlar ro'yxati · <span id="payRegStage">Avans</span> <span class="badge" id="payCount">0</span></h3>
               <p class="card-s" id="payRegSub">Holat tugmasini bosing — to'lov summasi, firma va sana jurnalga yoziladi</p>
             </div>
             <div class="tools">
@@ -1059,7 +1168,7 @@ footer.foot button:hover { color: var(--text); }
         <div class="card c-12">
           <div class="card-h">
             <div>
-              <h3 class="card-t">Filiallar oylik fondi · <span id="brMonth">—</span></h3>
+              <h3 class="card-t">Kimga qancha oylik kerak? · <span id="brMonth">—</span></h3>
               <p class="card-s"><b>Fond va avans</b> — har oy uchun alohida; <b>nom va hisob raqami</b> — barcha oylar uchun umumiy. Avans ustuniga summa yoki foiz yozing (masalan: <b>15%</b>), avans olmaydiganga <b>0</b> — bo'sh qoldirilsa standart foiz.</p>
             </div>
             <div class="tools">
@@ -1104,7 +1213,7 @@ footer.foot button:hover { color: var(--text); }
 
     <footer class="foot">
       <span>FOT Rezerv · <span id="appVer"></span> · <span id="footStore">Ma'lumotlar shu qurilmada saqlanadi</span></span>
-      <span><button data-action="shortcuts">Klaviatura yorliqlari <kbd>?</kbd></button></span>
+      <span><button data-action="help">Dastur qanday ishlaydi?</button> &nbsp;·&nbsp; <button data-action="shortcuts">Klaviatura yorliqlari <kbd>?</kbd></button></span>
     </footer>
   </main>
 </div>
@@ -1282,16 +1391,38 @@ select 'Tayyor ✓' as holat, count(*) as qatorlar from public.treasury_state;</
   </div>
 </dialog>
 
-<!-- ================= SHORTCUTS ================= -->
+<!-- ================= DASTUR QANDAY ISHLAYDI ================= -->
+<dialog id="dlgHelp" aria-labelledby="helpTitle" style="width:min(760px,calc(100vw - 24px))">
+  <div class="modal">
+    <div class="modal-h"><h3 id="helpTitle">Dastur qanday ishlaydi?</h3><button class="btn sm icon ghost" data-action="dlg-close" aria-label="Yopish"><i data-ic="x"></i></button></div>
+    <div class="modal-b" style="display:flex;flex-direction:column;gap:20px">
+      <p class="story-text" style="max-width:none">Har oy xodimlarga oylik berish uchun katta pul kerak. Uni bir kunda topish qiyin, shuning uchun pul <b>oy davomida, har kuni oz-ozdan</b> yig'ib boriladi va keyin filiallarga tarqatiladi. Dastur shu ishni kuzatadi va har kuni nima qilish kerakligini aytib turadi.</p>
+      <div class="steps" id="helpSteps"></div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">So'zlar nimani anglatadi</div>
+        <dl class="gloss">
+          <div><dt>Oylik fondi</dt><dd>Bir oyda barcha filiallar xodimlariga beriladigan oylik puli — yig'ilishi kerak bo'lgan jami summa.</dd></div>
+          <div><dt>Avans</dt><dd>Oylikning oy o'rtasida beriladigan birinchi qismi. Har bir filial uchun alohida: foizda, aniq summada yoki umuman berilmasligi mumkin.</dd></div>
+          <div><dt>Asosiy qism</dt><dd>Avansdan keyin qolgan pul — oy oxirida beriladi.</dd></div>
+          <div><dt>Bank kuni</dt><dd>Banklar ishlaydigan kun: dushanbadan jumagacha, bayramlardan tashqari. Pul faqat shu kunlari o'tkaziladi.</dd></div>
+          <div><dt>Bugungi vazifa</dt><dd>Bugun ajratilishi kerak bo'lgan pul: <b>qolgan summa ÷ qolgan bank kunlari</b>. Bugun kam ajratilsa, ertangi vazifa kattalashadi.</dd></div>
+          <div><dt>Bashorat</dt><dd>«Shu sur'atda davom etsa nima bo'ladi?» degan hisob: hozirgacha kuniga o'rtacha qancha tushgan bo'lsa, qolgan kunlarda ham shuncha tushadi deb olinadi.</dd></div>
+          <div><dt>Ranglar</dt><dd><span class="ok-t">Yashil</span> — joyida, <span class="warn-t">sariq</span> — diqqat kerak, <span class="bad-t">qizil</span> — xavf bor, kulrang — hali boshlanmagan.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <dialog id="dlgKeys" class="sm" aria-labelledby="keysTitle" style="width:min(620px,calc(100vw - 24px))">
   <div class="modal">
     <div class="modal-h"><h3 id="keysTitle">Klaviatura yorliqlari</h3><button class="btn sm icon ghost" data-action="dlg-close" aria-label="Yopish"><i data-ic="x"></i></button></div>
     <div class="modal-b">
       <div class="keys">
         <div>Yangi kiritish (summa)<kbd>N</kbd></div>
-        <div>Boshqaruv markazi<kbd>1</kbd></div>
-        <div>Bank taqsimoti<kbd>2</kbd></div>
-        <div>Filiallar reestri<kbd>3</kbd></div>
+        <div>Yig'ish<kbd>1</kbd></div>
+        <div>To'lash<kbd>2</kbd></div>
+        <div>Filiallar<kbd>3</kbd></div>
         <div>Oldingi / keyingi oy<span><kbd>[</kbd> <kbd>]</kbd></span></div>
         <div>Joriy oy<kbd>0</kbd></div>
         <div>Taqdimot rejimi<kbd>P</kbd></div>
@@ -1323,13 +1454,13 @@ const SUPABASE_SRI = 'sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonK
 // Standart bulut ulanishi: qurilmada boshqa kalit saqlanmagan bo'lsa shu ishlatiladi (publishable kalit ochiq ishlatish uchun mo'ljallangan)
 const DEFAULT_CREDS = { url: '', key: '' };   // ochiq versiyada kalit yo'q — ulanish havolasi orqali
 // Versiya va doimiy havola. Internetga joylashda (deploy.mjs) versiya qo'yiladi, kalit esa ochiq koddan olib tashlanadi
-const APP_VERSION = '2026.11.13-1916';
+const APP_VERSION = '2026.11.16-1602';
 const APP_URL = 'https://ulfatjonqudratov85-commits.github.io/fot-rezerv/';
 const TABLE = 'treasury_state';
 const ROW_ID = 'main';
 const MAX_FIRMS = 8;
 const STAGES = ['advance', 'remainder', 'full'];
-const STAGE_LABEL = { overview: 'Umumiy holat', advance: 'Avans', remainder: 'Asosiy qism', full: "Bir martalik (100%)" };
+const STAGE_LABEL = { overview: 'Umumiy holat', advance: 'Avans', remainder: 'Asosiy qism', full: "Bir yo'la (100%)" };
 const PAY_VIEWS = ['overview', 'advance', 'remainder', 'full'];
 const MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
 const MONTHS_S = ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'Iyn', 'Iyl', 'Avg', 'Sen', 'Okt', 'Noy', 'Dek'];
@@ -1372,6 +1503,7 @@ const ICONS = {
   checkC: '<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/>',
   alert: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.9.7c0 1.6-2.5 2.1-2.5 3.7M12 16.8h.01"/>',
   x: '<path d="M18 6 6 18M6 6l12 12"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
@@ -1441,8 +1573,9 @@ const moneyU = v => (isUSD() ? money(v) : `${money(v)} so'm`);
 function compact(v) {
   const neg = v < 0 ? '−' : ''; let a = Math.abs(v);
   if (isUSD()) { a /= rate(); if (a >= 1e6) return `${neg}$${dec(a / 1e6, 2)}M`; if (a >= 1e4) return `${neg}$${dec(a / 1e3, 1)}K`; return `${neg}$${group(a)}`; }
-  if (a >= 1e9) return `${neg}${dec(a / 1e9, 2)} mlrd`;
-  if (a >= 1e6) return `${neg}${dec(a / 1e6, a >= 1e8 ? 0 : 1)} mln`;
+  const tz = s => s.replace(/,(\d*?)0+$/, (_, d) => (d ? `,${d}` : ''));   // "63,0" → "63", "4,50" → "4,5"
+  if (a >= 1e9) return `${neg}${tz(dec(a / 1e9, 2))} mlrd`;
+  if (a >= 1e6) return `${neg}${tz(dec(a / 1e6, a >= 1e8 ? 0 : 1))} mln`;
   if (a >= 1e3) return `${neg}${group(a / 1e3)} ming`;
   return neg + group(a);
 }
@@ -2124,6 +2257,21 @@ function computeMetrics(m) {
   const planToDate = Math.min(totalFund, basePace * elapsed.length);
   const vsPlan = collected - planToDate;
   const missed = started ? elapsed.filter(d => !daily[d]) : [];
+  // So'nggi 5 bank kunidagi o'rtacha tushum va shu sur'atda 100% bo'ladigan sana
+  const lastK = elapsed.slice(-5);
+  const recent = lastK.length ? sum(lastK.map(d => (daily[d] ? daily[d].total : 0))) / lastK.length : 0;
+  const kDone = avgPace > 0 ? Math.ceil(remaining / avgPace - 1e-9) : Infinity;
+  const doneDate = started && remaining > 0 && kDone <= ahead.length ? ahead[kDone - 1] : null;
+  // Bugungi vazifa: bugun (shu kunning o'zi ham hisobda) qancha ajratish kerak = qolgan summa ÷ qolgan bank kunlari
+  const inToday = m === tm && daily[today] ? daily[today].total : 0;
+  const daysIncl = bankDates.filter(d => d >= today);
+  const remBefore = Math.max(0, totalFund - (collected - inToday));
+  const advBefore = Math.max(0, advTarget - (collected - inToday));
+  const advDaysIncl = daysIncl.filter(d => d <= advDeadline).length;
+  const paceFull = daysIncl.length ? remBefore / daysIncl.length : remBefore;
+  const paceAdv = advBefore > 0 && advDaysIncl > 0 ? advBefore / advDaysIncl : 0;
+  const task = { isBank: bankSet.has(today), entered: inToday, target: Math.max(paceFull, paceAdv), driver: paceAdv > paceFull + 1 ? 'advance' : 'full', remBefore, days: daysIncl.length, advBefore, advDays: advDaysIncl, next: bankDates.find(d => d > today) || null };
+  task.left = Math.max(0, task.target - inToday);
 
   const firmIn = new Array(F).fill(0);
   entries.forEach(e => { firmIn[e.firmIndex] += e.amount; });
@@ -2132,20 +2280,20 @@ function computeMetrics(m) {
 
   let status, statusText;
   const fmtC = v => compact(v);
-  if (!br.length || totalFund <= 0) { status = 'idle'; statusText = "<b>Sozlanmagan</b> Filiallar fondi kiritilmagan — «Filiallar reestri»ni to'ldiring"; }
-  else if (remaining === 0) { status = 'done'; statusText = `<b>100% ta'minlandi</b> Oylik fondi bank hisoblarida to'liq jamlangan${over > 0 ? ` (+${fmtC(over)} ortiqcha)` : ''}`; }
-  else if (m < tm) { status = 'risk'; statusText = `<b>Oy yakunlangan</b> ${fmtC(remaining)} kamomad bilan yopilgan`; }
-  else if (advOverdue && cutoff >= advDeadline) { status = 'risk'; statusText = `<b>Avans muddati o'tdi</b> Avans uchun yana ${fmtC(advNeed)} kerak`; }
-  else if (!elapsed.length || !started) { status = 'idle'; statusText = `<b>Boshlanmagan</b> Bu oyda hali kiritma yo'q · kunlik norma ${fmtC(todayNorm)}`; }
-  else if (forecast < totalFund * 0.95) { status = 'risk'; statusText = `<b>Xavf</b> Hozirgi tempda oy oxirida ${fmtC(totalFund - forecast)} kamomad bo'ladi`; }
-  else if (forecast < totalFund) { status = 'warn'; statusText = `<b>Nazorat</b> Prognoz ${pctS(forecastPct, 0)} — kunlik ${fmtC(todayNorm)} dan ajrating`; }
-  else { status = 'ok'; statusText = vsPlan >= 0 ? `<b>Barqaror</b> Rejadan ${fmtC(vsPlan)} oldinda · bugungi norma ${fmtC(todayNorm)}` : `<b>Barqaror</b> Prognoz ${pctS(forecastPct, 0)} · bugungi norma ${fmtC(todayNorm)}`; }
+  if (!br.length || totalFund <= 0) { status = 'idle'; statusText = "<b>Sozlanmagan</b> «Filiallar» bo'limida oylik fondini kiriting"; }
+  else if (remaining === 0) { status = 'done'; statusText = `<b>Tayyor</b> Oylik puli to'liq yig'ilgan${over > 0 ? ` (+${fmtC(over)} ortiqcha)` : ''}`; }
+  else if (m < tm) { status = 'risk'; statusText = `<b>Oy yopilgan</b> ${fmtC(remaining)} yig'ilmay qolgan`; }
+  else if (!elapsed.length || !started) { status = 'idle'; statusText = `<b>Boshlanmagan</b> Hali kiritma yo'q · kuniga ${fmtC(todayNorm)} kerak`; }
+  else if (advOverdue && cutoff >= advDeadline) { status = 'risk'; statusText = `<b>Avans kechikdi</b> Avans uchun yana ${fmtC(advNeed)} kerak`; }
+  else if (forecast < totalFund * 0.95) { status = 'risk'; statusText = `<b>Xavf</b> Shu sur'atda oy oxirida ${fmtC(totalFund - forecast)} yetmaydi`; }
+  else if (forecast < totalFund) { status = 'warn'; statusText = `<b>Diqqat</b> Biroz orqada — shu sur'atda ${pctS(forecastPct, 0)} yig'iladi`; }
+  else { status = 'ok'; statusText = vsPlan >= 0 ? `<b>Joyida</b> Rejadan ${fmtC(vsPlan)} oldinda` : "<b>Joyida</b> Shu sur'atda oy oxirigacha ulguradi"; }
 
   return {
     m, F, entries, totalFund, advPct, advTarget, collected, remaining, over, pct, cal, bankDates, bankSet, daily, today, tm,
     cutoff, elapsed, ahead, B, basePace, needPace, advDeadline, advReachedOn, fullReachedOn, advNeed, advReached, advLeftDays,
     advPace, advOverdue, todayNorm, normDriver, avgPace, forecast, forecastPct, planToDate, vsPlan, missed,
-    firmIn, outflow: out, firmBal, status, statusText,
+    firmIn, outflow: out, firmBal, status, statusText, started, recent, doneDate, task,
     cfg, branches: br, cfgSrc: cfgSource(m), cfgOwn: !!state.months[m],
     isPast: m < tm, isFuture: m > tm, isCurrent: m === tm
   };
@@ -2268,15 +2416,16 @@ function emptyHTML(title, text, actionHTML = '') {
 function renderAll() {
   M = computeMetrics(month);
   renderHeader();
-  renderHero();
-  renderKPIs();
-  renderTrack();
+  renderStory();
+  renderToday();
+  renderQuestions();
+  renderSim();
+  renderInsights();
   renderVaults();
   renderFirmPick();
   renderFormMeta();
   renderCalendar();
   renderTrajectory();
-  renderDonut();
   renderLedger();
   if (ui.tab === 'payout') renderPayout();
   if (ui.tab === 'branches') renderBranches();
@@ -2287,9 +2436,11 @@ function renderAll() {
 function renderHeader() {
   const st = state.settings;
   $('#monthLabel').innerHTML = `${esc(monthName(month))}${month === thisMonth() ? ' <small>joriy oy</small>' : ''}`;
-  $('#tabFlow').textContent = `${st.accFirms.length} → ${M.branches.length}`;
+  const Ov = computeOverview(M);
+  $('#tabPct').textContent = M.totalFund > 0 ? (M.pct > 0 && M.pct < 1 ? '<1%' : pctS(M.pct, 0)) : '—';
+  $('#tabFlow').textContent = `${Ov.done}/${Ov.rows.length}`;
   $('#tabBranches').textContent = M.branches.length;
-  $('#payTitle').textContent = `${st.accFirms.length} ta firmadan → ${M.branches.length} ta filialga`;
+  $('#payTitle').textContent = `${st.accFirms.length} ta hisobdan → ${M.branches.length} ta filialga`;
   $$('.advPctT').forEach(e => { e.textContent = fmtP(M.advPct); });
   $$('.remPctT').forEach(e => { e.textContent = fmtP(100 - M.advPct); });
   $$('.cu').forEach(e => { e.textContent = isUSD() ? '' : "so'm"; });
@@ -2298,106 +2449,314 @@ function renderHeader() {
   $('#presentTitle').textContent = `${monthName(month)} · ${M.branches.length} filial · ${st.accFirms.length} hisob raqam`;
 }
 
-/* ---------- HERO ---------- */
-function renderHero() {
-  const C = 2 * Math.PI * 92;
-  const p = clamp(M.pct, 0, 100);
+/* ---------- XULOSA: bitta jumlada holat + oddiy tilda izoh ---------- */
+const bld = s => `<b>${esc(s)}</b>`;
+const compactU = v => `${compact(v)}${isUSD() ? '' : " so'm"}`;
+const pct0 = v => (v > 0 && v < 1 ? '1% dan kam' : pctS(v, 0));
+const helpBtn = text => `<button type="button" class="help" data-tip="${esc(text)}" aria-label="Izoh">?</button>`;
+const TONE = { ok: 'ok-m', done: 'ok-m', warn: 'warn-m', risk: 'bad-m', idle: 'text-3' };
+
+function verdict(Mx) {
+  const N = Mx.branches.length;
+  if (!N || Mx.totalFund <= 0) return { head: 'Avval filiallar fondini kiriting', text: "Har bir filialga qancha oylik kerakligi «Filiallar» bo'limida yoziladi. Shundan keyin dastur har kuni qancha pul ajratish kerakligini o'zi hisoblab beradi." };
+  let head;
+  if (Mx.remaining === 0) head = Mx.isPast ? "Oy yopildi: oylik puli to'liq yig'ilgan" : "Oylik puli to'liq tayyor";
+  else if (Mx.isPast) head = `Oy yopildi: ${compactU(Mx.remaining)} yig'ilmay qoldi`;
+  else if (!Mx.started) head = Mx.isFuture ? 'Bu oy hali boshlanmagan' : "Yig'ish hali boshlanmagan";
+  else if (Mx.advOverdue && Mx.cutoff >= Mx.advDeadline) head = "Avans muddati o'tdi — pul yetarli emas";
+  else if (Mx.status === 'risk') head = "Shu sur'atda pul yetmay qoladi";
+  else if (Mx.status === 'warn') head = 'Biroz orqada qolyapmiz';
+  else head = Mx.vsPlan >= 0 ? "Hammasi reja bo'yicha ketyapti" : "Ulguramiz, lekin bo'shashmaslik kerak";
+
+  const t = [`${N} ta filial oyligi uchun bu oyda ${bld(compactU(Mx.totalFund))} kerak.`];
+  if (Mx.collected <= 0) t.push("Hozircha hech narsa yig'ilmagan.");
+  else if (Mx.over > 0) t.push(`${bld(compactU(Mx.collected))} yig'ildi — kerakligidan ${bld(compactU(Mx.over))} ko'p.`);
+  else if (Mx.remaining === 0) t.push(`Hammasi yig'ildi${Mx.fullReachedOn ? ` — ${dayLabel(Mx.fullReachedOn)} kuni yakunlandi` : ''}.`);
+  else t.push(`Shundan ${bld(compactU(Mx.collected))} yig'ildi — bu ${bld(pct0(Mx.pct))}.`);
+  if (Mx.remaining > 0 && !Mx.isPast) {
+    if (Mx.ahead.length) t.push(`Qolgan ${bld(compactU(Mx.remaining))}ni ${bld(`${Mx.ahead.length} bank kunida`)} yig'ish kerak.`);
+    else t.push(`Bank kunlari tugadi — ${bld(compactU(Mx.remaining))} yetmayapti.`);
+    if (!Mx.started && Mx.advOverdue && Mx.advTarget > 0) t.push(`Avans muddati (${bld(dayLabel(Mx.advDeadline))}) esa o'tib ketgan.`);
+    if (Mx.started && Mx.forecast != null && Mx.ahead.length) t.push(Mx.forecast >= Mx.totalFund
+      ? `Shu sur'atda davom etsa, ${Mx.doneDate ? `${bld(dayLabel(Mx.doneDate))} atrofida` : 'oy oxirigacha'} to'liq yig'iladi.`
+      : `Shu sur'atda davom etsa, oy oxirida ${bld(`${compactU(Mx.totalFund - Mx.forecast)} yetmay qoladi`)}.`);
+  }
+  return { head, text: t.join(' ') };
+}
+
+function renderStory() {
+  const hero = $('#hero');
+  hero.dataset.s = M.status;                          // rang — umumiy holat: yashil / sariq / qizil
+  const v = verdict(M);
+  $('#heroEyebrow').textContent = `${monthName(month)} · ${M.isCurrent ? 'joriy oy' : M.isPast ? 'yakunlangan oy' : 'kelgusi oy'}`;
+  $('#vHead').textContent = v.head;
+  $('#vText').innerHTML = v.text;
+
+  // Halqa
+  const C = 2 * Math.PI * 92, p = clamp(M.pct, 0, 100);
   const arc = $('#ringArc'); arc.style.strokeDasharray = `${C}`; arc.style.strokeDashoffset = `${C * (1 - p / 100)}`;
-  $('#hero').dataset.s = M.status;                    // halqa rangi — umumiy holat (yaxshi / diqqat / xavf)
-  animNum($('#ringPct'), M.pct, v => (v <= 0 ? '0' : v >= 100 ? '100' : dec(v, 1)));
-  const mk = (pc, r1, r2, color, w) => { const t = clamp(pc, 0, 100) / 100 * 2 * Math.PI; return `<line x1="${110 + r1 * Math.cos(t)}" y1="${110 + r1 * Math.sin(t)}" x2="${110 + r2 * Math.cos(t)}" y2="${110 + r2 * Math.sin(t)}" style="stroke:${color}" stroke-width="${w}" stroke-linecap="round"/>`; };
+  animNum($('#ringPct'), M.pct, x => (x <= 0 ? '0' : x >= 100 ? '100' : x < 10 ? dec(x, 1) : dec(x, 0)));
   let marks = '';
-  if (M.advPct > 0 && M.advPct < 100) marks += mk(M.advPct, 81, 103, 'var(--text)', 2.5).replace('/>', '><title>Avans marrasi</title></line>');
   if (M.elapsed.length && !M.isPast && M.remaining > 0 && M.totalFund > 0) {
-    const t = (M.planToDate / M.totalFund) * 2 * Math.PI;
-    marks += `<circle cx="${110 + 92 * Math.cos(t)}" cy="${110 + 92 * Math.sin(t)}" r="4.5" style="fill:var(--panel);stroke:var(--text-2)" stroke-width="2"><title>Bugungacha reja</title></circle>`;
+    const a = (M.planToDate / M.totalFund) * 2 * Math.PI;
+    marks = `<circle cx="${110 + 92 * Math.cos(a)}" cy="${110 + 92 * Math.sin(a)}" r="6" style="fill:var(--panel);stroke:var(--text-2)" stroke-width="2.5"><title>Reja bo'yicha bugun shu yerda bo'lish kerak</title></circle>`;
   }
   $('#ringMarks').innerHTML = marks;
-  const ov = $('#ringOver');
-  ov.classList.toggle('hidden', !(M.over > 0));
-  if (M.over > 0) ov.textContent = `+${compact(M.over)} ortiqcha`;
 
-  $('#heroEyebrow').textContent = `${monthName(month)} · ${M.isCurrent ? 'joriy oy' : M.isPast ? 'yakunlangan oy' : 'kelgusi oy'} · rezerv holati`;
-  animNum($('#heroAmt'), M.collected, money);
-  $('#heroUnit').textContent = isUSD() ? '' : "so'm";
-  $('#heroOf').innerHTML = `<b>${esc(money(M.totalFund))}</b> ${isUSD() ? '' : "so'm"} fonddan · ${M.branches.length} filial · ${M.B} bank kuni`;
-
-  const chip = (cls, ic, text, val) => `<span class="chip ${cls}">${icon(ic)}${esc(text)}${val ? ` <b>${esc(val)}</b>` : ''}</span>`;
-  const ch = [];
-  if (M.advTarget > 0) {
-    if (M.advReached) ch.push(chip('ok', 'checkC', `Avans ${fmtP(M.advPct)}% yopildi`, M.advReachedOn ? dayLabel(M.advReachedOn) : ''));
-    else if (M.advOverdue) ch.push(chip('bad', 'alert', "Avans muddati o'tdi", `−${compact(M.advNeed)}`));
-    else ch.push(chip('warn', 'flag', `Avansgacha ${M.advLeftDays} bank kuni`, `+${compact(M.advNeed)}`));
-  }
-  if (M.totalFund > 0) {
-    if (M.remaining === 0) ch.push(chip('ok', 'checkC', '100% yopildi', M.fullReachedOn ? dayLabel(M.fullReachedOn) : ''));
-    else if (M.isPast) ch.push(chip('bad', 'alert', 'Yakuniy kamomad', compact(M.remaining)));
-    else ch.push(chip('info', 'calendar', `${M.ahead.length} bank kuni qoldi`, compact(M.remaining)));
-  }
-  if (M.elapsed.length && M.entries.length && M.remaining > 0 && !M.isPast) ch.push(M.vsPlan >= 0 ? chip('ok', 'trend', 'Rejadan oldinda', `+${compact(M.vsPlan)}`) : chip('warn', 'trend', 'Rejadan ortda', compact(M.vsPlan)));
-  if (M.missed.length) ch.push(chip('bad', 'alert', `${M.missed.length} bank kuni tushumsiz o'tdi`, ''));
-  $('#heroChips').innerHTML = ch.join('');
-}
-
-/* ---------- KPI ---------- */
-function renderKPIs() {
+  // To'rtta asosiy son
   animNum($('#kFund'), M.totalFund, money);
-  $('#kFundBadge').textContent = `${M.branches.length} filial`;
-  $('#kAdvPct').textContent = fmtP(M.advPct);
-  $('#kAdvTarget').textContent = money(M.advTarget);
-
+  animNum($('#heroAmt'), M.collected, money);
   animNum($('#kRem'), M.remaining, money);
-  if (M.over > 0) badge($('#kRemBadge'), 'ok', `+${compact(M.over)}`);
-  else badge($('#kRemBadge'), M.remaining === 0 && M.totalFund > 0 ? 'ok' : M.isPast ? 'bad' : '', M.totalFund ? `fondning ${dec(100 - Math.min(100, M.pct), 1)}%` : '—');
-  $('#kRemMeter').style.width = `${M.totalFund ? (M.remaining / M.totalFund) * 100 : 0}%`;
-  $('#kDaysLbl').textContent = M.isPast ? 'Oy yakunlangan' : 'Qolgan bank kuni';
-  $('#kDaysLeft').textContent = M.isPast ? `${M.B} kun` : `${M.ahead.length} / ${M.B} kun`;
+  $('#kDaysLbl').textContent = M.isPast ? 'Bank kunlari' : 'Bank kuni qoldi';
+  $('#kDaysLeft').textContent = M.isPast ? M.B : M.ahead.length;
+  $('#kDaysOf').textContent = M.isPast ? 'kun' : `/ ${M.B} kun`;
 
-  const nb = $('#kNormBadge');
-  if (M.totalFund > 0 && M.remaining === 0) { animNum($('#kNorm'), 0, money); badge(nb, 'ok', 'Bajarildi'); }
-  else if (M.isPast || !M.ahead.length) { animNum($('#kNorm'), null); badge(nb, 'bad', 'Muddat tugagan'); }
-  else {
-    animNum($('#kNorm'), M.todayNorm, money);
-    const r = M.basePace ? (M.todayNorm / M.basePace - 1) * 100 : 0;
-    if (M.normDriver === 'advance') badge(nb, 'warn', 'Avans uchun');
-    else if (r > 2) badge(nb, r > 15 ? 'bad' : 'warn', `Rejadan +${dec(r, 0)}%`);
-    else if (r < -2) badge(nb, 'ok', `Rejadan −${dec(-r, 0)}%`);
-    else badge(nb, 'info', 'Reja bo\'yicha');
-  }
-  $('#kBase').textContent = money(M.basePace);
-
-  const fb = $('#kFcBadge');
-  if (M.forecast == null) { animNum($('#kFc'), null); badge(fb, '', "Ma'lumot yo'q"); }
-  else {
-    animNum($('#kFc'), M.forecast, money);
-    badge(fb, M.forecastPct >= 100 ? 'ok' : M.forecastPct >= 95 ? 'warn' : 'bad', `Fondning ${dec(M.forecastPct, 0)}%`);
-  }
-  $('#kAvg').textContent = M.avgPace ? money(M.avgPace) : '—';
-}
-
-/* ---------- MILESTONE TRACK ---------- */
-function renderTrack() {
-  $('#bigFrac').innerHTML = `${esc(compact(M.collected))} <span>/ ${esc(compact(M.totalFund))}</span>`;
-  $('#trackFill').style.width = `${clamp(M.pct, 0, 100)}%`;
-  $('#track').dataset.s = M.status;
+  // Yo'l: 0 → avans → 100%
+  const tr = $('#track'); tr.dataset.s = M.status;
+  $('#trackFill').style.width = `${p}%`;
+  $('#pathPct').textContent = M.totalFund > 0 ? `${compact(M.collected)} / ${compact(M.totalFund)}` : '';
   const adv = clamp(M.advPct, 0, 100);
   $('#trackZone').style.width = `${adv}%`;
-  const place = (el, pc) => {
-    el.style.left = `${pc}%`;
-    const sp = el.querySelector('span');
-    sp.style.transform = pc < 7 ? 'translateX(-12%)' : pc > 93 ? 'translateX(-88%)' : 'translateX(-50%)';
-  };
+  const place = (el, pc) => { el.style.left = `${pc}%`; el.querySelector('span').style.transform = pc < 8 ? 'translateX(-10%)' : pc > 92 ? 'translateX(-90%)' : 'translateX(-50%)'; };
   const a = $('#trackAdv');
   a.classList.toggle('hidden', !(adv > 0 && adv < 100));
-  a.querySelector('span').textContent = `Avans ${fmtP(M.advPct)}%${M.advReached ? ' ✓' : ''}`;
+  a.querySelector('span').textContent = `Avans · ${fmtP(M.advPct)}%`;
   place(a, adv);
-  const pl = $('#trackPlan');
-  const showPlan = M.elapsed.length && !M.isPast && M.remaining > 0 && M.totalFund > 0;
+  const pl = $('#trackPlan'), showPlan = M.elapsed.length && !M.isPast && M.remaining > 0 && M.totalFund > 0;
   pl.classList.toggle('hidden', !showPlan);
-  if (showPlan) { const pc = (M.planToDate / M.totalFund) * 100; pl.querySelector('span').textContent = `Bugungacha reja ${dec(pc, 0)}%`; place(pl, pc); }
+  const note = $('#planNote');
+  if (showPlan) {
+    const pc = (M.planToDate / M.totalFund) * 100;
+    pl.querySelector('span').textContent = `Reja bo'yicha bugun · ${dec(pc, 0)}%`;
+    place(pl, pc);
+    const lag = M.basePace > 0 ? Math.abs(M.vsPlan) / M.basePace : 0;
+    note.innerHTML = !M.started ? `Reja bo'yicha shu kungacha ${bld(compactU(M.planToDate))} yig'ilgan bo'lishi kerak edi.`
+      : M.vsPlan >= 0 ? `Rejadan ${bld(compactU(M.vsPlan))} oldindamiz — bu taxminan ${bld(`${dec(lag, 1)} kunlik`)} zaxira.`
+        : `Rejadan ${bld(compactU(-M.vsPlan))} ortdamiz — bu taxminan ${bld(`${dec(lag, 1)} kunlik`)} tushum.`;
+  }
+  note.classList.toggle('hidden', !showPlan);
+
+  // Ikki marra
+  const mile = (tone, ic, name, amount, when, st) => `<div class="mile" style="--tone:var(--${tone})"><span class="mile-ic">${icon(ic)}</span><div><div class="mile-n">${name}</div><div class="mile-a">${esc(amount)}</div><div class="mile-s">${st}</div></div><div class="mile-d"><small>muddat</small>${esc(when)}</div></div>`;
+  let h = '';
+  if (M.totalFund > 0) {
+    const lastBank = M.bankDates[M.bankDates.length - 1] || `${M.m}-${pad(daysIn(M.m))}`;
+    if (M.advTarget > 0) {
+      const st = M.advReached ? ['ok-m', 'checkC', `Tayyor${M.advReachedOn ? ` — ${dayLabel(M.advReachedOn)} kuni yig'ilgan` : ''}`]
+        : M.advOverdue ? ['bad-m', 'alert', `Muddat o'tdi — ${bld(compactU(M.advNeed))} yetmaydi`]
+          : [M.advLeftDays <= 2 ? 'warn-m' : 'text-3', 'clock', `${bld(`${M.advLeftDays} bank kuni`)} qoldi — yana ${bld(compactU(M.advNeed))} kerak`];
+      h += mile(st[0], st[1], `1-marra · Avans ${helpBtn("Avans — oylikning oy o'rtasida beriladigan birinchi qismi. Har bir filial uchun alohida belgilanadi.")}`, `${money(M.advTarget)}${isUSD() ? '' : " so'm"}`, dayLabel(M.advDeadline), st[2]);
+    } else h += mile('text-3', 'info', '1-marra · Avans', 'Berilmaydi', '—', "Bu oyda hech bir filialga avans belgilanmagan");
+    const st2 = M.remaining === 0 ? ['ok-m', 'checkC', `Tayyor${M.fullReachedOn ? ` — ${dayLabel(M.fullReachedOn)} kuni yig'ilgan` : ''}`]
+      : M.isPast ? ['bad-m', 'alert', `Yopildi — ${bld(compactU(M.remaining))} yetmadi`]
+        : [M.status === 'risk' ? 'bad-m' : M.status === 'warn' ? 'warn-m' : 'text-3', 'flag', `${bld(`${M.ahead.length} bank kuni`)} qoldi — yana ${bld(compactU(M.remaining))} kerak`];
+    h += mile(st2[0], st2[1], "2-marra · To'liq fond", `${money(M.totalFund)}${isUSD() ? '' : " so'm"}`, dayLabel(lastBank), st2[2]);
+  }
+  $('#miles').innerHTML = h;
 }
 
-/* ---------- VAULTS (firma hisoblari) ---------- */
+/* ---------- BUGUNGI VAZIFA ---------- */
+function renderToday() {
+  const t = M.task, cu = isUSD() ? '' : "<small>so'm</small>";
+  $('#taskDate').textContent = M.isCurrent ? `Bugun — ${dayLabel(M.today)}, ${wdName(M.today).toLowerCase()}` : monthName(month);
+  const box = (cls, label, value, why, extra = '') => `<div class="task-box ${cls}"><div class="task-l">${label}</div><div class="task-v">${value}</div>${why ? `<div class="task-why">${why}</div>` : ''}${extra}</div>`;
+  let html;
+  if (!M.branches.length || M.totalFund <= 0) html = box('', 'Birinchi qadam', 'Filiallar fondini kiriting', "Shundan keyin bugungi vazifa shu yerda ko'rinadi", `<button class="btn" data-action="tab" data-tab="branches">Filiallarga o'tish</button>`);
+  else if (M.remaining === 0) html = box('done', M.isPast ? 'Oy yopilgan' : 'Bugungi vazifa', `${icon('checkC')}Hammasi tayyor`, "Bu oy uchun pul to'liq yig'ilgan — ajratish shart emas");
+  else if (M.isPast) html = box('', 'Oy yopilgan', `${esc(money(M.collected))} ${cu}`, `${esc(pct0(M.pct))} yig'ilgan · ${esc(compactU(M.remaining))} yetmagan`);
+  else if (M.isFuture) html = box('', 'Har bank kuni ajratish rejasi', `${esc(money(M.basePace))} ${cu}`, `${esc(money(M.totalFund))} ÷ ${M.B} bank kuni`);
+  else if (!t.isBank) html = box('', 'Bugun dam olish kuni', 'Ajratish shart emas', t.next ? `Keyingi bank kuni — ${esc(dayLabel(t.next))}: ${esc(compactU(t.target))} ajratiladi` : 'Bu oyda bank kuni qolmadi');
+  else {
+    const pc = t.target > 0 ? clamp((t.entered / t.target) * 100, 0, 100) : 100;
+    const why = t.driver === 'advance' ? `Avansga ulgurish uchun: ${esc(money(t.advBefore))} ÷ ${t.advDays} bank kuni` : `${esc(money(t.remBefore))} qoldi ÷ ${t.days} bank kuni`;
+    const st = t.entered <= 0 ? 'Bugun hali kiritilmagan' : t.left > 0.5 ? `Bugun ${compactU(t.entered)} kiritildi — yana ${compactU(t.left)} kerak` : `Bugungi vazifa bajarildi${t.entered - t.target > t.target * 0.005 ? ` · ${compactU(t.entered - t.target)} ortig'i bilan` : ''}`;
+    html = box(t.left > 0.5 ? '' : 'done', `Bugun ajratish kerak ${helpBtn("Oy oxirigacha ulgurish uchun bugun ajratilishi kerak bo'lgan pul. Hisobi oddiy: qolgan summa qolgan bank kunlariga teng bo'linadi. Kam ajratilsa — ertangi vazifa kattalashadi.")}`, `${esc(money(t.target))} ${cu}`, why,
+      `<div class="meter"><i style="width:${pc}%"></i></div><div class="task-st">${esc(st)}</div>${M.advOverdue ? `<div class="task-st">Avans muddati o'tgan — birinchi navbatda ${esc(compactU(M.advNeed))} kerak</div>` : ''}${t.left > 0.5 ? `<button class="btn edit-only" data-action="task-fill">Shu summani formaga yozish</button>` : ''}`);
+  }
+  $('#task').innerHTML = html;
+}
+
+/* ---------- UCH ASOSIY SAVOL ---------- */
+function qHTML(question, help, a) {
+  const rows = (a.rows || []).map(r => `<div><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('');
+  return `<div class="q-h"><span>${esc(question)}</span>${helpBtn(help)}</div>
+    <div class="q-a" style="--tone:var(--${a.tone})"><span class="q-ic">${icon(a.ic)}</span><span>${esc(a.ans)}</span></div>
+    <p class="q-w">${a.why || ''}</p>
+    ${a.meter != null ? `<div class="meter" style="--tone:var(--${a.tone === 'text-3' ? 'text-2' : a.tone})"><i style="width:${clamp(a.meter, 0, 100)}%"></i></div>` : ''}
+    ${a.cmp || ''}${rows ? `<div class="q-rows">${rows}</div>` : ''}${a.foot || ''}`;
+}
+function answerAdvance(Mx) {
+  if (Mx.totalFund <= 0) return { tone: 'text-3', ic: 'info', ans: "Hali hisoblab bo'lmaydi", why: 'Avval filiallar fondini kiriting.' };
+  if (Mx.advTarget <= 0) return { tone: 'text-3', ic: 'info', ans: 'Bu oyda avans berilmaydi', why: 'Hech bir filialga avans belgilanmagan — butun oylik oy oxirida beriladi.' };
+  const rows = [['Avans jami', `${moneyU(Mx.advTarget)} (${fmtP(Mx.advPct)}%)`], ['Muddat', `${dayLabel(Mx.advDeadline)}, ${wdName(Mx.advDeadline).toLowerCase()}`], ["Hozircha yig'ildi", moneyU(Math.min(Mx.collected, Mx.advTarget))]];
+  const meter = (Math.min(Mx.collected, Mx.advTarget) / Mx.advTarget) * 100;
+  if (Mx.advReached) return { tone: 'ok-m', ic: 'check', ans: 'Ha — pul tayyor', why: Mx.advReachedOn ? `Avans uchun pul ${bld(dayLabel(Mx.advReachedOn))} kuni yig'ib bo'lingan.` : 'Avans uchun pul yig\'ilgan.', meter, rows };
+  if (Mx.advOverdue) return { tone: 'bad-m', ic: 'x', ans: `Yo'q — ${compactU(Mx.advNeed)} yetmaydi`, why: `Muddat ${bld(dayLabel(Mx.advDeadline))} kuni tugagan, pul esa to'liq yig'ilmagan.`, meter, rows };
+  const perDay = Mx.advNeed / Mx.advLeftDays;
+  return { tone: Mx.advLeftDays <= 2 ? 'warn-m' : 'text-3', ic: 'clock', ans: `Hali yo'q — ${compactU(Mx.advNeed)} kerak`, why: `${bld(`${Mx.advLeftDays} bank kuni`)} qoldi. Kuniga ${bld(compactU(perDay))} ajratilsa — ulguradi.`, meter, rows };
+}
+function answerMonthEnd(Mx) {
+  if (Mx.totalFund <= 0) return { tone: 'text-3', ic: 'info', ans: "Hali hisoblab bo'lmaydi", why: 'Avval filiallar fondini kiriting.' };
+  const live = Mx.remaining > 0 && !Mx.isPast && Mx.ahead.length > 0;
+  const bars = [];
+  if (live) bars.push(['Kerakli kunlik summa', Mx.needPace, 'need']);
+  if (Mx.started) bars.push(["Hozirgi o'rtacha", Mx.avgPace, '']);
+  if (Mx.started && Mx.elapsed.length >= 6) bars.push(['Oxirgi 5 bank kuni', Mx.recent, '']);
+  bars.push(["Boshlang'ich reja", Mx.basePace, '']);
+  const mx = Math.max(1, ...bars.map(b => b[1]));
+  const cmp = `<div class="cmp">${bars.map(b => `<div class="cmp-r ${b[2]}"><span>${esc(b[0])}</span><b>${esc(compactU(b[1]))}</b><div class="bar"><i style="width:${clamp((b[1] / mx) * 100, 0, 100)}%"></i></div></div>`).join('')}</div>`;
+  if (Mx.remaining === 0) return { tone: 'ok-m', ic: 'check', ans: 'Ha — allaqachon tayyor', why: Mx.fullReachedOn ? `To'liq fond ${bld(dayLabel(Mx.fullReachedOn))} kuni yig'ib bo'lingan.` : "To'liq fond yig'ilgan.", cmp };
+  if (Mx.isPast) return { tone: 'bad-m', ic: 'x', ans: `Yo'q — ${compactU(Mx.remaining)} yetmadi`, why: `Oy ${bld(pct0(Mx.pct))} bilan yopilgan.`, cmp };
+  if (!Mx.started || Mx.forecast == null) return { tone: 'text-3', ic: 'info', ans: "Hali aytib bo'lmaydi", why: `Birinchi kiritmalardan keyin bashorat paydo bo'ladi. Reja bo'yicha kuniga ${bld(compactU(Mx.basePace))} kerak.`, cmp };
+  const fp = dec(Mx.forecastPct, 0);
+  if (Mx.forecast >= Mx.totalFund) {
+    const spare = Mx.doneDate ? Mx.ahead.length - Mx.ahead.indexOf(Mx.doneDate) - 1 : 0;
+    return { tone: 'ok-m', ic: 'check', ans: 'Ha, ulguramiz', why: Mx.doneDate ? `Shu sur'atda ${bld(dayLabel(Mx.doneDate))} kuni 100% bo'ladi${spare > 0 ? ` — ${spare} bank kuni erta` : ''}.` : `Shu sur'atda oy oxirida ${bld(`${fp}%`)} bo'ladi.`, cmp };
+  }
+  const why = `Shu sur'atda oy oxirida ${bld(`${fp}%`)} bo'ladi — ${bld(compactU(Mx.totalFund - Mx.forecast))} yetmaydi.`;
+  return Mx.forecastPct >= 95 ? { tone: 'warn-m', ic: 'alert', ans: 'Deyarli — ozgina yetmaydi', why, cmp } : { tone: 'bad-m', ic: 'x', ans: "Yo'q — tezlashish kerak", why, cmp };
+}
+function answerPayments(Mx) {
+  if (Mx.totalFund <= 0) return { tone: 'text-3', ic: 'info', ans: "Hali hisoblab bo'lmaydi", why: 'Avval filiallar fondini kiriting.' };
+  const O = computeOverview(Mx), P = Mx.advTarget > 0 ? computePayout(Mx, 'advance') : null;
+  const rows = [['Hisoblarda hozir', moneyU(O.available)], ["To'langan", `${moneyU(O.paid)} · ${O.done}/${O.rows.length} filial`], ["Hali to'lanishi kerak", moneyU(O.left)]];
+  const foot = `<button class="btn sm" data-action="tab" data-tab="payout">To'lovlarni ochish${icon('chevR')}</button>`;
+  const meter = O.total > 0 ? (O.paid / O.total) * 100 : 0;
+  if (O.left <= 0) return { tone: 'ok-m', ic: 'check', ans: "Hammasi to'langan", why: "Barcha filiallarga oylik to'liq o'tkazilgan.", meter: 100, rows, foot };
+  if (P && P.outstanding > 0) {
+    const gap = P.outstanding - O.available;
+    return gap <= 0.5
+      ? { tone: 'ok-m', ic: 'check', ans: 'Ha — avansga yetadi', why: `Avans uchun ${bld(compactU(P.outstanding))} to'lash kerak (${P.pending.length} filial), hisoblarda ${bld(compactU(O.available))} bor.`, meter, rows, foot }
+      : { tone: Mx.isCurrent && Mx.today >= Mx.advDeadline ? 'bad-m' : 'warn-m', ic: 'alert', ans: `Hali yo'q — ${compactU(gap)} yetmaydi`, why: `Avans uchun ${bld(compactU(P.outstanding))} to'lash kerak, hisoblarda esa ${bld(compactU(O.available))} bor.`, meter, rows, foot };
+  }
+  const gap = O.left - O.available;
+  return gap <= 0.5
+    ? { tone: 'ok-m', ic: 'check', ans: "Ha — qolgan to'lovlarga yetadi", why: `Yana ${bld(compactU(O.left))} to'lash kerak, hisoblarda ${bld(compactU(O.available))} bor.`, meter, rows, foot }
+    : { tone: 'text-3', ic: 'clock', ans: `Hali yig'ilmoqda — ${compactU(gap)} kerak`, why: `Qolgan to'lovlar uchun ${bld(compactU(O.left))} kerak, hisoblarda hozircha ${bld(compactU(O.available))} bor.`, meter, rows, foot };
+}
+function renderQuestions() {
+  $('#q1').innerHTML = qHTML('Avansga pul yetadimi?', "Avans — oylikning oy o'rtasida beriladigan birinchi qismi. Bu yerda avans muddatigacha kerakli pul yig'ilgan-yig'ilmagani ko'rinadi.", answerAdvance(M));
+  $('#q2').innerHTML = qHTML('Oy oxirigacha ulguramizmi?', "Hozirgacha kuniga o'rtacha qancha tushayotganiga qarab hisoblanadi: shu sur'at saqlansa, oy oxirida fondning necha foizi yig'iladi.", answerMonthEnd(M));
+  $('#q3').innerHTML = qHTML("Filiallarga to'lashga pul bormi?", "Firma hisoblarida hozir turgan pul (yig'ilgan − to'langan) navbatdagi to'lovlarga yetadimi — shu tekshiriladi.", answerPayments(M));
+}
+
+/* ---------- TAHLILCHI XULOSALARI ---------- */
+function computeInsights(Mx) {
+  const out = [], add = (p, tone, ic, html, tab) => out.push({ p, tone, ic, html, tab });
+  const N = Mx.branches.length;
+  if (!N || Mx.totalFund <= 0) { add(100, 'info', 'info', "Tahlil uchun avval «Filiallar» bo'limida har bir filialning oylik fondini kiriting.", 'branches'); return out; }
+  const live = !Mx.isPast && Mx.remaining > 0;
+  if (Mx.remaining === 0) add(99, 'ok', 'checkC', `Fond to'liq yig'ilgan${Mx.fullReachedOn ? ` (${dayLabel(Mx.fullReachedOn)})` : ''}. Endi asosiy ish — «To'lash» bo'limida to'lovlarni belgilash.`, 'payout');
+  if (Mx.over > 0) add(20, 'info', 'coins', `Kerakligidan ${bld(compactU(Mx.over))} ortiq yig'ilgan — bu pul hisoblarda qoladi.`);
+  // Avans
+  if (Mx.advTarget > 0 && !Mx.advReached && !Mx.isPast) {
+    if (Mx.advOverdue) add(98, 'bad', 'alert', `Avans muddati (${bld(dayLabel(Mx.advDeadline))}) o'tdi, lekin avans uchun yana ${bld(compactU(Mx.advNeed))} yetmayapti. Birinchi navbatda shuni yoping.`);
+    else if (Mx.advLeftDays <= 3) add(95, 'warn', 'flag', `Avansgacha atigi ${bld(`${Mx.advLeftDays} bank kuni`)} qoldi. Yana ${bld(compactU(Mx.advNeed))} kerak — kuniga ${bld(compactU(Mx.advNeed / Mx.advLeftDays))} ajratilsa ulguradi.`);
+  }
+  if (Mx.advTarget > 0 && Mx.advReached) {
+    const P = computePayout(Mx, 'advance'), si = P.after.findIndex(x => x < -0.5);
+    if (P.pending.length && Mx.isCurrent && Mx.today >= Mx.advDeadline) add(90, 'warn', 'clock', `Avans muddati keldi: ${bld(`${P.pending.length} ta filial`)}ga hali to'lanmagan (${bld(compactU(P.outstanding))}). Pul tayyor — to'lovlarni belgilang.`, 'payout');
+    if (P.pending.length && si >= 0) add(88, 'warn', 'bank', `${bld(firmName(si))} hisobida unga biriktirilgan avans to'lovlari uchun ${bld(compactU(-P.after[si]))} yetmaydi. To'lovchi firmani almashtiring yoki shu hisobga pul tushiring.`, 'payout');
+  }
+  // Reja bilan farq
+  if (live && Mx.started && Mx.elapsed.length && Mx.basePace > 0) {
+    const d = Math.abs(Mx.vsPlan) / Mx.basePace;
+    if (Mx.vsPlan < -Mx.basePace * 0.25) add(80, Mx.status === 'risk' ? 'bad' : 'warn', 'trend', `Rejadan ${bld(compactU(-Mx.vsPlan))} ortdamiz — bu taxminan ${bld(`${dec(d, 1)} kunlik`)} tushum. Yetib olish uchun endi kuniga ${bld(compactU(Mx.needPace))} kerak (boshida ${compactU(Mx.basePace)} edi).`);
+    else if (Mx.vsPlan > Mx.basePace * 0.25) add(40, 'ok', 'trend', `Rejadan ${bld(compactU(Mx.vsPlan))} oldindamiz — ${bld(`${dec(d, 1)} kunlik`)} zaxira bor. Endi kuniga ${bld(compactU(Mx.needPace))} yetarli.`);
+  }
+  // So'nggi kunlar sur'ati
+  if (live && Mx.started && Mx.elapsed.length >= 6 && Mx.needPace > 0) {
+    if (Mx.recent < Mx.needPace * 0.85) add(75, 'warn', 'zap', `Oxirgi 5 bank kunida kuniga o'rtacha ${bld(compactU(Mx.recent))} tushdi — kerakli ${compactU(Mx.needPace)}dan ${bld(`${dec((1 - Mx.recent / Mx.needPace) * 100, 0)}% kam`)}.`);
+    else if (Mx.recent > Mx.avgPace * 1.15) add(35, 'ok', 'zap', `Sur'at oshyapti: oxirgi 5 bank kunida kuniga o'rtacha ${bld(compactU(Mx.recent))} — oy boshidan beri o'rtachadan (${compactU(Mx.avgPace)}) yuqori.`);
+  }
+  // Tushumsiz kunlar
+  if (live && Mx.missed.length) {
+    const lst = Mx.missed.slice(-3).map(dayLabel).join(', ');
+    add(70, 'warn', 'calendar', `${bld(`${Mx.missed.length} bank kuni`)}da tushum bo'lmadi (${Mx.missed.length > 3 ? '… ' : ''}${lst}). Har bir bo'sh kun qolgan kunlarning har biriga${Mx.ahead.length ? ` taxminan ${bld(compactU(Mx.basePace / Mx.ahead.length))}` : ''} yuk qo'shadi.`);
+  }
+  if (live && !Mx.started) add(60, 'info', 'info', Mx.isFuture ? "Bu oy hali boshlanmagan. Fond va avanslarni «Filiallar» bo'limida oldindan tekshirib qo'yishingiz mumkin." : "Bu oyda hali kiritma yo'q. Birinchi bank o'tkazmasini yozing — shundan keyin dastur sur'at va bashoratni hisoblaydi.");
+  // O'tgan oy bilan solishtirish
+  const Mp = computeMetrics(shiftMonth(Mx.m, -1));
+  if (Mp.entries.length && Mp.totalFund > 0) {
+    if (live && Mx.started && Mx.elapsed.length) {
+      const k = Math.min(Mx.elapsed.length, Mp.bankDates.length), dPrev = Mp.bankDates[k - 1];
+      const pp = (sum(Mp.entries.filter(e => e.date <= dPrev).map(e => e.amount)) / Mp.totalFund) * 100;
+      if (Math.abs(pp - Mx.pct) >= 3) add(45, Mx.pct >= pp ? 'ok' : 'warn', 'trend', `O'tgan oy shu paytda (${k}-bank kuni) fondning ${bld(pct0(pp))}i yig'ilgan edi, hozir — ${bld(pct0(Mx.pct))}.`);
+    }
+    if (Mx.totalFund !== Mp.totalFund) { const df = Mx.totalFund - Mp.totalFund; add(30, 'info', 'building', `Bu oy fondi o'tgan oydagidan ${bld(compactU(Math.abs(df)))} (${dec((Math.abs(df) / Mp.totalFund) * 100, 1)}%) ${df > 0 ? "ko'p" : 'kam'}.`); }
+  }
+  // Ma'lumot sifati
+  const offN = Mx.entries.filter(e => !Mx.bankSet.has(e.date)).length;
+  if (offN) add(50, 'info', 'calendar', `${bld(`${offN} ta kiritma`)} dam olish kuniga yozilgan. Sanani tekshiring yoki kalendarda o'sha kunni bank kuni deb belgilang.`);
+  if (Mx.F > 1 && Mx.collected > 0 && Mx.entries.length >= 3) {
+    const mx = Math.max(...Mx.firmIn), i = Mx.firmIn.indexOf(mx), sh = (mx / Mx.collected) * 100;
+    if (sh >= 75) add(25, 'info', 'bank', `Tushumning ${bld(pct0(sh))}i bitta hisobda — ${bld(firmName(i))}. Filiallarga to'lashda asosiy yuk shu hisobga tushadi.`);
+  }
+  const noAcc = Mx.branches.filter(b => !b.account).length;
+  if (noAcc) add(15, 'info', 'building', `${bld(`${noAcc} ta filial`)}ning hisob raqami kiritilmagan — to'lov ro'yxatini chop etishda kerak bo'ladi.`, 'branches');
+  if (Mx.started) {
+    const best = Object.keys(Mx.daily).reduce((a, d) => (!a || Mx.daily[d].total > Mx.daily[a].total ? d : a), null);
+    if (best && Object.keys(Mx.daily).length >= 3) add(10, 'info', 'sparkles', `Eng katta tushum — ${bld(dayLabel(best))}: ${bld(compactU(Mx.daily[best].total))}.`);
+  }
+  return out.sort((x, y) => y.p - x.p).slice(0, 6);
+}
+function renderInsights() {
+  const TAB = { payout: "To'lashga o'tish", branches: "Filiallarga o'tish" };
+  const TN = { ok: 'ok-m', warn: 'warn-m', bad: 'bad-m', info: 'text-3' };
+  $('#insights').innerHTML = computeInsights(M).map(x => `<div class="ins-r" style="--tone:var(--${TN[x.tone]})"><span class="ins-ic">${icon(x.ic)}</span><div>${x.html}${x.tab ? ` <button class="lnk" data-action="tab" data-tab="${x.tab}">${TAB[x.tab]} →</button>` : ''}</div></div>`).join('')
+    || '<p class="card-s" style="margin:0">Hozircha alohida e\'tibor talab qiladigan narsa yo\'q.</p>';
+}
+
+/* ---------- «AGAR…» HISOBLAGICHI ---------- */
+function simulate(Mx, pace) {
+  const n = Mx.ahead.length, end = Math.min(Mx.totalFund, Mx.collected + pace * n);
+  const k = pace > 0 ? Math.ceil(Mx.remaining / pace - 1e-9) : Infinity;
+  const ka = pace > 0 ? Math.ceil(Mx.advNeed / pace - 1e-9) : Infinity;
+  const advDays = Mx.ahead.filter(d => d <= Mx.advDeadline).length;
+  return {
+    end, endPct: Mx.totalFund ? (end / Mx.totalFund) * 100 : 0, short: Math.max(0, Mx.totalFund - Mx.collected - pace * n),
+    fullDate: Mx.remaining <= 0 ? Mx.fullReachedOn : k <= n ? Mx.ahead[k - 1] : null, spare: k <= n ? n - k : 0,
+    advOk: Mx.advNeed <= 0 || ka <= advDays, advDate: Mx.advNeed <= 0 ? Mx.advReachedOn : ka <= n ? Mx.ahead[ka - 1] : null,
+    advShort: Math.max(0, Mx.advNeed - pace * advDays)
+  };
+}
+const simOn = () => M.totalFund > 0 && M.remaining > 0 && !M.isPast && M.ahead.length > 0;
+const simDefault = () => (M.started && M.avgPace > 0 ? M.avgPace : M.isCurrent && M.task.isBank ? M.task.target : M.todayNorm || M.basePace);
+const simPace = () => (ui.simPace != null ? ui.simPace : simDefault());
+const simMax = () => niceMax(Math.max(M.basePace, M.todayNorm, M.avgPace, simDefault(), 1) * 2);
+function renderSim() {
+  const on = simOn(), rng = $('#simRange'), pace = simPace(), mx = simMax();
+  $('#simCard').classList.toggle('off', !on);
+  rng.disabled = !on;
+  const v = on ? clamp(Math.round((pace / mx) * 200), 0, 200) : 0;
+  if (document.activeElement !== rng || Number(rng.value) !== v) rng.value = v;
+  rng.style.setProperty('--p', `${v / 2}%`);
+  $('#simVal').textContent = on ? money(pace) : '—';
+  const near = (a, b) => Math.abs(a - b) <= mx / 400;
+  const presets = [];
+  if (on) {
+    if (M.started && M.avgPace > 0) presets.push(["Hozirgi o'rtacha", M.avgPace]);
+    presets.push(['Kerakli', M.todayNorm], ["Boshlang'ich reja", M.basePace]);
+  }
+  $('#simPresets').innerHTML = presets.map(p => `<button type="button" class="${near(p[1], pace) ? 'hl' : ''}" data-action="sim-preset" data-v="${Math.round(p[1])}">${esc(p[0])} · ${esc(compact(p[1]))}</button>`).join('');
+  const row = (tone, ic, html) => `<div class="sim-r" style="--tone:var(--${tone})">${icon(ic)}<div>${html}</div></div>`;
+  let h;
+  if (!on) h = row('text-3', 'info', M.totalFund <= 0 ? 'Avval filiallar fondini kiriting.' : M.remaining === 0 ? "Fond to'liq yig'ilgan — hisoblashga hojat yo'q." : M.isPast ? 'Oy yopilgan — bashorat faqat joriy va kelgusi oylar uchun.' : 'Bu oyda bank kuni qolmadi.');
+  else {
+    const s = simulate(M, pace);
+    h = '';
+    if (M.advTarget > 0 && !M.advReached && !M.advOverdue) h += s.advOk
+      ? row('ok-m', 'checkC', `${bld('Avans')}: ${bld(dayLabel(s.advDate))} kuni tayyor bo'ladi — muddatga (${dayLabel(M.advDeadline)}) ulguradi.`)
+      : row('bad-m', 'alert', `${bld('Avans')}: muddatgacha (${dayLabel(M.advDeadline)}) ${bld(compactU(s.advShort))} yetmaydi.`);
+    h += s.fullDate
+      ? row('ok-m', 'checkC', `${bld("To'liq fond")}: ${bld(dayLabel(s.fullDate))} kuni yig'ilib bo'ladi${s.spare > 0 ? ` — ${s.spare} bank kuni erta` : ' — aynan oxirgi bank kuni'}.`)
+      : row('bad-m', 'alert', `${bld("To'liq fond")}: oy oxirida ${bld(`${dec(s.endPct, 0)}%`)} bo'ladi — ${bld(compactU(s.short))} yetmaydi.`);
+    h += row('text-3', 'info', `Qolgan ${M.ahead.length} bank kunida jami ${bld(compactU(pace * M.ahead.length))} tushadi (kerak: ${compactU(M.remaining)}).`);
+  }
+  $('#simOut').innerHTML = h;
+}
+
+/* ---------- HISOBLAR (firmalar) ---------- */
 function renderVaults() {
   const st = state.settings;
   $('#vaults').innerHTML = st.accFirms.map((name, i) => {
@@ -2406,17 +2765,29 @@ function renderVaults() {
     const acc = st.firmAccounts[i];
     return `<div class="vault" style="--fc:${firmVar(i)}">
       <div class="vault-h">
-        <div style="min-width:0"><div class="eyebrow">Asosiy hisob №${i + 1}</div><div class="vault-n" title="${esc(name)}">${esc(name)}</div>${acc ? `<div class="vault-a">${esc(maskAcc(acc))}</div>` : ''}</div>
-        <span class="badge" title="Yig'ilgan mablag'dagi ulushi">${dec(share, 1)}%</span>
+        <div style="min-width:0"><div class="vault-n" title="${esc(name)}">${esc(name)}</div>${acc ? `<div class="vault-a">${esc(maskAcc(acc))}</div>` : ''}</div>
+        <span class="badge" title="Yig'ilgan pulning shu hisobga tushgan ulushi">${dec(share, 0)}%</span>
       </div>
-      <div class="vault-bal ${bal < 0 ? 'bad-t' : ''}">${esc(money(bal))}<span class="u">${isUSD() ? '' : "so'm"} qoldiq</span></div>
+      <div class="vault-bal ${bal < 0 ? 'bad-t' : ''}">${esc(money(bal))}<span class="u">${isUSD() ? '' : "so'm"} hozir hisobda</span></div>
       <div class="vault-rows">
-        <div><span>Yig'ildi</span><b>${esc(money(inn))}</b></div>
-        <div><span>Filiallarga to'landi</span><b>${outF ? `−${esc(money(outF))}` : '0'}</b></div>
+        <div><span>Tushgan</span><b>${esc(money(inn))}</b></div>
+        <div><span>Filiallarga to'langan</span><b>${outF ? `−${esc(money(outF))}` : '0'}</b></div>
       </div>
       <div class="meter"><i style="width:${share}%"></i></div>
     </div>`;
   }).join('');
+}
+
+/* ---------- «DASTUR QANDAY ISHLAYDI?» ---------- */
+function openHelp() {
+  const N = M.branches.length, F = state.settings.accFirms.length;
+  const step = (n, title, text, now) => `<div class="step"><div class="step-n">${n}</div><h5>${title}</h5><p>${text}</p><div class="now">${now}</div></div>`;
+  $('#helpSteps').innerHTML = [
+    step(1, 'Qancha kerak?', "«Filiallar» bo'limida har bir filialga shu oy qancha oylik kerakligi yoziladi.", M.totalFund > 0 ? `Hozir: ${bld(`${N} ta filial`)}, jami ${bld(compactU(M.totalFund))}` : 'Hozir: hali kiritilmagan'),
+    step(2, "Yig'amiz", "Har bank kuni firma hisoblariga pul ajratiladi va «Yig'ish» bo'limiga yoziladi. Dastur bugun qancha kerakligini aytib turadi.", `Hozir: ${bld(`${F} ta hisob`)}, yig'ildi ${bld(compactU(M.collected))}${M.totalFund > 0 ? ` (${pct0(M.pct)})` : ''}`),
+    step(3, "To'laymiz", "Oy o'rtasida avans, oy oxirida qolgani filiallarga o'tkaziladi. «To'lash» bo'limida kimga to'langani belgilanadi.", M.advTarget > 0 ? `Hozir: avans ${bld(compactU(M.advTarget))} — ${bld(dayLabel(M.advDeadline))}gacha` : 'Hozir: bu oyda avans berilmaydi')
+  ].join('');
+  $('#dlgHelp').showModal();
 }
 
 /* ---------- FORM ---------- */
@@ -2440,7 +2811,7 @@ function renderFormMeta() {
     const dayTotal = sum((state.entries[date.slice(0, 7)] || []).filter(e => e.date === date).map(e => e.amount));
     $('#ffDay').textContent = moneyU(dayTotal);
   } else { dm.textContent = ''; $('#ffDay').textContent = '—'; }
-  $('#ffNorm').textContent = M.remaining > 0 && M.ahead.length ? moneyU(M.todayNorm) : '—';
+
   // izohlar uchun avtoto'ldirish
   const notes = [];
   Object.values(state.entries).flat().sort((a, b) => (b.ts || 0) - (a.ts || 0)).forEach(e => { if (e.note && !notes.includes(e.note) && notes.length < 12) notes.push(e.note); });
@@ -2519,15 +2890,14 @@ function renderTrajectory() {
   const dates = Array.from(new Set([...M.bankDates, ...Object.keys(M.daily)])).sort();
   const F = M.F;
   // Chiziqlar — neytral (yig'ilgan / reja / prognoz), rang faqat firmalar uchun
-  $('#trajLegend').innerHTML = `<span><i class="ln" style="background:var(--text)"></i>Yig'ilgan</span><span><i class="dash" style="color:var(--text-3)"></i>Reja</span><span><i class="dash dot" style="color:var(--text-2)"></i>Prognoz</span>${state.settings.accFirms.map((n, i) => `<span><i style="background:${firmVar(i)}"></i>${esc(n)}</span>`).join('')}`;
+  $('#trajLegend').innerHTML = `<span><i class="ln" style="background:var(--text)"></i>Yig'ilgan</span><span><i class="dash" style="color:var(--text-3)"></i>Reja</span><span><i class="dash dot" style="color:var(--accent)"></i>Bashorat</span>${state.settings.accFirms.map((n, i) => `<span><i style="background:${firmVar(i)}"></i>${esc(n)}</span>`).join('')}`;
   if (!dates.length || M.totalFund <= 0) { trajData = null; host.innerHTML = emptyHTML("Grafik uchun ma'lumot yo'q", 'Filiallar fondini va bank kunlarini tekshiring.'); return; }
   const n = dates.length;
   const anim = lastAnimMonth !== month; lastAnimMonth = month;
   let run = 0; const cum = dates.map(d => (run += M.daily[d] ? M.daily[d].total : 0));
   let pc = 0; const plan = dates.map(d => { if (M.bankSet.has(d)) pc += M.basePace; return Math.min(pc, M.totalFund); });
   const cutIdx = dates.reduce((k, d, i) => (M.cutoff && d <= M.cutoff ? i : k), -1);
-  const fc = M.forecast != null && M.ahead.length && cutIdx >= 0 ? M.forecast : null;
-  const yMax = niceMax(Math.max(M.totalFund, run, fc || 0, 1) * 1.05);
+  const yMax = niceMax(Math.max(M.totalFund, run, 1) * 1.05);
   const dMax = niceMax(Math.max(1, M.basePace, M.remaining > 0 && M.ahead.length ? M.todayNorm : 0, ...dates.map(d => (M.daily[d] ? M.daily[d].total : 0))) * 1.12);
   const ticksT = [0, 1, 2, 3, 4].map(k => yMax * k / 4), ticksB = [0, 1, 2].map(k => dMax * k / 2);
   const maxLbl = Math.max(...[...ticksT, ...ticksB].map(v => axisFmt(v).length));
@@ -2556,16 +2926,22 @@ function renderTrajectory() {
   // Reja
   const planPts = [[x0, yT(0)], ...plan.map((v, i) => [xc(i), yT(v)])];
   s += `<path d="${pathOf(planPts)}" fill="none" style="stroke:var(--text-3)" stroke-width="1.5" stroke-dasharray="6 5" stroke-linecap="round"/>`;
+  // Bashorat chizig'i: «Agar…» hisoblagichidagi kunlik summa bo'yicha (standart — hozirgi o'rtacha sur'at)
+  if (simOn()) {
+    const sp = simPace(), start = cutIdx >= 0 ? [xc(cutIdx), yT(cum[cutIdx])] : [x0, yT(0)];
+    const pts = [start]; let v = M.collected, hit = null;
+    M.ahead.forEach(d => { const i = dates.indexOf(d); if (i < 0 || hit) return; v = Math.min(M.totalFund, v + sp); pts.push([xc(i), yT(v)]); if (v >= M.totalFund) hit = d; });
+    const end = pts[pts.length - 1];
+    s += `<path d="${pathOf(pts)}" fill="none" style="stroke:var(--accent)" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>`;
+    s += `<circle cx="${end[0]}" cy="${end[1]}" r="4.5" style="fill:var(--panel);stroke:var(--accent)" stroke-width="2"/><text class="lbl" x="${end[0] - 9}" y="${end[1] + (hit || end[1] - yF < 34 ? 18 : -9)}" text-anchor="end" style="fill:var(--accent)">${hit ? `100% · ${esc(dayLabel(hit))}` : `oy oxirida ${dec((v / M.totalFund) * 100, 0)}%`}</text>`;
+  }
   // Haqiqiy
   if (cutIdx >= 0) {
     const pts = [[x0, yT(0)], ...cum.slice(0, cutIdx + 1).map((v, i) => [xc(i), yT(v)])];
     const last = pts[pts.length - 1];
     s += `<path d="${pathOf(pts)} L${P2(last[0], yT(0))} Z" fill="url(#gArea)" class="${anim ? 'fadein' : ''}"/>`;
     s += `<path id="actLine" d="${pathOf(pts)}" fill="none" style="stroke:var(--text)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" class="${anim ? 'draw' : ''}"/>`;
-    if (fc != null) {
-      s += `<path d="M${P2(last[0], last[1])} L${P2(xc(n - 1), yT(fc))}" fill="none" style="stroke:var(--text-2)" stroke-width="2" stroke-dasharray="1 6" stroke-linecap="round" class="${anim ? 'fadein' : ''}"/>`;
-      s += `<circle cx="${xc(n - 1)}" cy="${yT(fc)}" r="4" style="fill:var(--panel);stroke:var(--text-2)" stroke-width="2"/><text class="lbl" x="${xc(n - 1) - 9}" y="${yT(fc) + (fc > M.totalFund * 0.9 ? 17 : -9)}" text-anchor="end">Prognoz ${dec(M.forecastPct, 0)}%</text>`;
-    }
+
     s += `<circle cx="${last[0]}" cy="${last[1]}" r="9" style="fill:var(--text);opacity:.14"/><circle cx="${last[0]}" cy="${last[1]}" r="4.5" style="fill:var(--text);stroke:var(--panel)" stroke-width="2"/>`;
   }
   // Kunlik ustunlar (firmalar kesimida)
@@ -2603,25 +2979,6 @@ function trajTip(i) {
   return h;
 }
 
-/* ---------- DONUT ---------- */
-function renderDonut() {
-  const vals = M.firmIn, total = sum(vals), R = 84, C = 2 * Math.PI * R;
-  let s = `<circle cx="105" cy="105" r="${R}" fill="none" style="stroke:var(--track)" stroke-width="18"/>`;
-  if (total > 0) {
-    let off = 0; const gapL = vals.filter(v => v > 0).length > 1 ? 3 : 0;
-    vals.forEach((v, i) => {
-      if (v <= 0) return;
-      const len = (v / total) * C, dl = Math.max(0.5, len - gapL);
-      s += `<circle class="seg-arc" data-fi="${i}" cx="105" cy="105" r="${R}" style="stroke:var(--f${i % 8})" stroke-dasharray="${dl} ${C - dl}" stroke-dashoffset="${-off}"/>`;
-      off += len;
-    });
-  }
-  $('#donut').innerHTML = `<svg viewBox="0 0 210 210" role="img" aria-label="Firmalar ulushi">${s}</svg><div class="donut-c"><b>${esc(compact(total))}</b><span>${total ? "jami yig'ildi" : "ma'lumot yo'q"}</span></div>`;
-  $('#donutLegend').innerHTML = state.settings.accFirms.map((n, i) => {
-    const v = vals[i] || 0, sh = total ? (v / total) * 100 : 0;
-    return `<div class="dl-row" style="--fc:${firmVar(i)}"><i></i><span class="nm" title="${esc(n)}">${esc(n)}</span><span class="v">${esc(money(v))}<small>${dec(sh, 1)}% · ${(M.entries.filter(e => e.firmIndex === i)).length} o'tkazma</small></span></div>`;
-  }).join('');
-}
 
 /* ---------- LEDGER ---------- */
 function renderLedger() {
@@ -2687,12 +3044,14 @@ function renderPayout() {
   const P = computePayout(M, ui.stage); lastPayout = P;
   const payable = P.total - P.lockedCount - P.naCount;   // avans olmaydiganlar hisobga kirmaydi
   const paidPct = payable ? (P.paidCount / payable) * 100 : 0;
+  $('#payStory').innerHTML = !payable ? `${bld(STAGE_LABEL[P.stage])}: bu bosqichda to'lanadigan filial yo'q.`
+    : `${bld(STAGE_LABEL[P.stage])}: ${payable} ta filialdan ${bld(`${P.paidCount} tasiga`)} to'landi. ${P.pending.length ? `Yana ${bld(compactU(P.outstanding))} to'lash kerak; hisoblarda ${bld(compactU(P.available))} bor — ${P.coverage >= -0.5 ? 'yetadi' : bld(`${compactU(-P.coverage)} yetmaydi`)}.` : "Bu bosqich bo'yicha hammasi to'langan."}`;
   $('#payStats').innerHTML = [
     statHTML('Talab qilinadi', money(P.stageTotal), `${STAGE_LABEL[P.stage]} · ${payable} filial`),
     statHTML("To'landi", money(P.paidAmt), `${P.paidCount} / ${payable} filial`, { tone: 'ok', meter: paidPct }),
     statHTML("To'lanishi kerak", money(P.outstanding), `${P.pending.length} ta o'tkazma kutilmoqda`, { tone: P.outstanding > 0 ? 'warn' : '' }),
     statHTML('Hisoblarda mavjud', money(P.available), "Yig'ilgan − to'langan (barcha bosqich)"),
-    statHTML('Qoplash', `${P.coverage >= 0 ? '+' : ''}${money(P.coverage)}`, P.pending.length === 0 ? "Barcha o'tkazmalar yopilgan" : P.coverage >= 0 ? "Mablag' yetarli" : "Mablag' yetishmaydi", { tone: P.coverage >= 0 ? 'ok' : 'bad', alert: P.coverage < 0 })
+    statHTML('Yetadimi?', `${P.coverage >= 0 ? '+' : ''}${money(P.coverage)}`, P.pending.length === 0 ? "Barcha o'tkazmalar yopilgan" : P.coverage >= 0 ? "Mablag' yetarli" : "Mablag' yetishmaydi", { tone: P.coverage >= 0 ? 'ok' : 'bad', alert: P.coverage < 0 })
   ].join('');
 
   $('#payAlloc').innerHTML = state.settings.accFirms.map((n, i) => {
@@ -2749,12 +3108,14 @@ function renderOverview() {
   const O = computeOverview(M);
   lastPayout = null;
   const pc = O.total ? (O.paid / O.total) * 100 : 0;
+  $('#payStory').innerHTML = !O.rows.length ? "Bu oy uchun filiallar kiritilmagan."
+    : `${O.rows.length} ta filialga bu oyda jami ${bld(compactU(O.total))} to'lanishi kerak. Hozircha ${bld(compactU(O.paid))} to'landi (${O.done} ta filial to'liq). ${O.left <= 0 ? "Hammasi to'langan." : `Hisoblarda ${bld(compactU(O.available))} bor — qolgan to'lovlarga ${O.coverage >= -0.5 ? 'yetadi' : bld(`${compactU(-O.coverage)} yetmaydi`)}.`}`;
   $('#payStats').innerHTML = [
     statHTML('Jami oylik fondi', money(O.total), `${O.rows.length} filial · ${monthName(month)}`),
     statHTML("To'langan (barcha bosqich)", money(O.paid), `${O.done} / ${O.rows.length} filial to'liq yopilgan`, { tone: 'ok', meter: pc }),
     statHTML("To'lanishi kerak", money(O.left), "avans va asosiy qism bo'yicha", { tone: O.left > 0 ? 'warn' : '' }),
     statHTML('Hisoblarda mavjud', money(O.available), "Yig'ilgan − to'langan"),
-    statHTML('Qoplash', `${O.coverage >= 0 ? '+' : ''}${money(O.coverage)}`, O.left <= 0 ? "Barcha to'lovlar yopilgan" : O.coverage >= 0 ? "Qolgan to'lovlarga yetadi" : "Mablag' yetishmaydi", { tone: O.coverage >= 0 ? 'ok' : 'bad', alert: O.coverage < 0 })
+    statHTML('Yetadimi?', `${O.coverage >= 0 ? '+' : ''}${money(O.coverage)}`, O.left <= 0 ? "Barcha to'lovlar yopilgan" : O.coverage >= 0 ? "Qolgan to'lovlarga yetadi" : "Mablag' yetishmaydi", { tone: O.coverage >= 0 ? 'ok' : 'bad', alert: O.coverage < 0 })
   ].join('');
   $('#payHead').innerHTML = `<tr><th class="idx">№</th><th>Filial</th><th class="r">Oylik fondi</th><th class="r">Avans</th><th class="r">Asosiy qism</th><th class="r">To'langan</th><th class="r">Qoldiq</th></tr>`;
   const pill = (st, stage) => {
@@ -3022,6 +3383,7 @@ function switchTab(tab, silent) {
 function setMonth(m, keepForm = false) {
   if (!/^\d{4}-\d{2}$/.test(m)) return;
   month = m;
+  ui.simPace = null;
   closeMonthPop();
   if (calEdit) calEdit = false;
   if (!keepForm) resetForm();
@@ -3082,6 +3444,8 @@ function formatMoneyInput(inp) {
   while (i < s.length && seen < digitsBefore) { if (/\d/.test(s[i])) seen++; i++; }
   try { inp.setSelectionRange(i, i); } catch (e) {}
 }
+// Bugungi vazifadan qolgan summa (minglikka yaxlitlangan); bugun bank kuni bo'lmasa — kunlik kerakli summa
+const taskAmount = () => Math.ceil((M.isCurrent && M.task.isBank ? M.task.left : M.remaining > 0 && M.ahead.length ? M.todayNorm : 0) / 1000) * 1000;
 function setAmount(v) {
   const inp = $('#inpAmount');
   inp.value = v > 0 ? group(Math.min(v, 999999999999999), ' ') : '';
@@ -3101,8 +3465,8 @@ function resetForm(keepDate = false) {
   $('#inpAmount').value = ''; $('#inpNote').value = '';
   updateAmountHints();
   $('#editBanner').classList.add('hidden');
-  $('#formTitle').textContent = 'Kunlik rezerv kiritish';
-  $('#submitBtn span').textContent = 'Rezervga kiritish';
+  $('#formTitle').textContent = "Bank o'tkazmasini yozish";
+  $('#submitBtn span').textContent = 'Kiritish';
   const di = $('#inpDate');
   if (!keepDate || !di.value) di.value = defaultDate();
   if (M) { renderFormMeta(); renderCalendar(); renderLedger(); }
@@ -3703,7 +4067,10 @@ const ACTIONS = {
   'tab': el => switchTab(el.dataset.tab),
   'firm-pick': el => { ui.firm = Number(el.dataset.i); saveUI(); renderFirmPick(); },
   'quick-add': el => setAmount(parseNum($('#inpAmount').value) + Number(el.dataset.v)),
-  'quick-norm': () => { if (M.remaining > 0 && M.ahead.length) setAmount(Math.ceil(M.todayNorm / 1000) * 1000); else toast("Bu oy uchun norma yo'q", { type: 'info' }); },
+  'quick-norm': () => { const v = taskAmount(); if (v > 0) setAmount(v); else toast("Bugun uchun ajratish kerak emas", { type: 'info' }); },
+  'task-fill': () => { const v = taskAmount(); if (v <= 0) return; $('#inpDate').value = M.today; renderFormMeta(); renderCalendar(); focusForm(); setAmount(v); },
+  'help': () => openHelp(),
+  'sim-preset': el => { ui.simPace = Number(el.dataset.v); renderSim(); renderTrajectory(); },
   'quick-rest': () => { if (M.remaining > 0) setAmount(M.remaining); else toast("Kamomad yo'q — fond to'liq yig'ilgan", { type: 'info' }); },
   'quick-clear': () => setAmount(0),
   'cancel-edit': () => resetForm(),
@@ -3759,6 +4126,9 @@ function bindEvents() {
   document.addEventListener('click', e => {
     const el = e.target.closest('[data-action]');
     if (!$('#monthPop').classList.contains('hidden') && !e.target.closest('#monthSwitch')) closeMonthPop();
+    const tp = e.target.closest('[data-tip]');        // «?» izohlari: sensorli ekranda bosganda ham ochiladi
+    if (tp) { const r = tp.getBoundingClientRect(); showTip(`<div class="tip-text">${esc(tp.dataset.tip)}</div>`, r.left, r.bottom - 6); e.preventDefault(); return; }
+    if (tipEl().classList.contains('show')) hideTip();
     if (!el || el.tagName === 'SELECT' || el.disabled) return;
     const fn = ACTIONS[el.dataset.action];
     if (fn) { e.preventDefault(); fn(el); }
@@ -3769,6 +4139,9 @@ function bindEvents() {
   $('#entryForm').addEventListener('submit', submitEntry);
   $('#inpAmount').addEventListener('input', e => { formatMoneyInput(e.target); updateAmountHints(); });
   $('#inpDate').addEventListener('change', () => { renderFormMeta(); renderCalendar(); });
+  // «Agar…» surgichi: natija va grafikdagi bashorat chizig'i shu zahoti yangilanadi
+  let simRaf = 0;
+  $('#simRange').addEventListener('input', e => { ui.simPace = (simMax() * Number(e.target.value)) / 200; renderSim(); cancelAnimationFrame(simRaf); simRaf = requestAnimationFrame(renderTrajectory); });
   $('#ledgerSearch').addEventListener('input', debounce(renderLedger, 120));
   $('#paySearch').addEventListener('input', debounce(renderPayout, 120));
   $('#branchSearch').addEventListener('input', debounce(renderBranches, 120));
@@ -3803,8 +4176,8 @@ function bindEvents() {
     }
     const day = t.closest && t.closest('#cal .day[data-date]');
     if (day) return showTip(dayTip(day.dataset.date), e.clientX, e.clientY);
-    const arc = t.closest && t.closest('.seg-arc');
-    if (arc) { const i = Number(arc.dataset.fi), v = M.firmIn[i]; return showTip(`<h5>${esc(firmName(i))}</h5><div class="r"><span>Yig'ildi</span><b>${esc(moneyU(v))}</b></div><div class="r"><span>Ulushi</span><b>${dec(M.collected ? v / M.collected * 100 : 0, 1)}%</b></div><div class="r"><span>Qoldiq</span><b>${esc(moneyU(M.firmBal[i]))}</b></div>`, e.clientX, e.clientY); }
+    const hp = t.closest && t.closest('[data-tip]');
+    if (hp) return showTip(`<div class="tip-text">${esc(hp.dataset.tip)}</div>`, e.clientX, e.clientY);
     const lk = t.closest && t.closest('.lk');
     if (lk) { $$('.lk.on').forEach(x => x !== lk && x.classList.remove('on')); lk.classList.add('on'); return showTip(flowTip(lk.dataset.key), e.clientX, e.clientY); }
     if (tipEl().classList.contains('show')) hideTip();
