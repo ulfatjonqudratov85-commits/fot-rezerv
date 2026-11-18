@@ -645,6 +645,13 @@ button.pill-st:hover { border-color: var(--line-3); color: var(--text); }
 .flow-wrap text.nm { font-weight: 650; fill: var(--text); font-size: 12.5px; }
 .flow-wrap text.am { fill: var(--text-3); font-size: 11px; }
 .pay-date { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-3); }
+.pay-date .input { width: auto; }
+.pay-src { font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+.pay-src.manual { color: var(--warn); }
+.pd-edit { display: inline-flex; align-items: center; gap: 5px; margin-top: 3px; font-size: 11.5px; color: var(--text-3); }
+.pd-edit svg { width: 12px; height: 12px; opacity: .7; }
+button.pd-edit:hover { color: var(--text); text-decoration: underline; }
+.set-preview { font-size: 12px; color: var(--info); }
 
 /* =========================================================
    OVERLAYS: dialog / toast / tooltip
@@ -1140,7 +1147,12 @@ footer.foot button:hover { color: var(--text); }
               <p class="card-s" id="payRegSub">Holat tugmasini bosing — to'lov summasi, firma va sana jurnalga yoziladi</p>
             </div>
             <div class="tools">
-              <label class="pay-date edit-only" id="payDateWrap" title="Belgilanadigan to'lovlar shu sana bilan yoziladi">To'lov sanasi<input type="date" class="input sm" id="payDate"></label>
+              <div class="pay-date edit-only" id="payDateWrap" title="«O'tkazildi» deb belgilangan to'lovlar shu sana bilan yoziladi">
+                <label for="payDate">To'lov sanasi</label>
+                <input type="date" class="input sm" id="payDate" aria-describedby="payDateSrc">
+                <span class="pay-src" id="payDateSrc"></span>
+                <button type="button" class="btn sm ghost hidden" id="payDateReset" data-action="pay-date-reset" aria-label="Rejadagi sanaga qaytarish">↺</button>
+              </div>
               <div class="seg" role="group" aria-label="Filtr" id="payFilterSeg">
                 <button data-action="pay-filter" data-v="all" aria-pressed="true">Barchasi</button>
                 <button data-action="pay-filter" data-v="pending" aria-pressed="false">Kutilmoqda</button>
@@ -1253,10 +1265,13 @@ footer.foot button:hover { color: var(--text); }
         </div>
         <div class="box">
           <div class="kv"><span>Joriy oy bank kunlari</span><b id="setBankDays">—</b></div>
-          <div class="kv"><span>Avans muddati (shu oy uchun)</span><b id="setAdvDeadline">—</b></div>
+          <div class="kv"><span>Avans to'lov sanasi</span><b id="setAdvDeadline">—</b></div>
+          <div class="kv"><span>Asosiy qism to'lov sanasi</span><b id="setPayDay">—</b></div>
           <div class="kv"><span>Jami oylik fondi</span><b id="setFund">—</b></div>
           <div class="kv"><span>Jami avans (haqiqiy o'rtacha foiz)</span><b id="setAdvEff">—</b></div>
           <div class="kv"><span>Alohida avans belgilangan filiallar</span><b id="setAdvCustom">—</b></div>
+          <div class="set-preview hidden" id="setPreview">Yuqoridagi qiymatlar — kiritilgan yangi sozlama bo'yicha. «Saqlash» bosilgach hamma joyga qo'llanadi.</div>
+          <p class="d" style="margin:0">Bu sanalar «Yig'ish» bo'limidagi marralarga, bugungi vazifaga va «To'lash» bo'limidagi to'lov sanasiga avtomatik bog'langan.</p>
           <div><button class="btn sm" data-action="adv-reset-all">Barcha filiallarni standart foizga qaytarish</button></div>
         </div>
       </div>
@@ -1454,7 +1469,7 @@ const SUPABASE_SRI = 'sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonK
 // Standart bulut ulanishi: qurilmada boshqa kalit saqlanmagan bo'lsa shu ishlatiladi (publishable kalit ochiq ishlatish uchun mo'ljallangan)
 const DEFAULT_CREDS = { url: '', key: '' };   // ochiq versiyada kalit yo'q — ulanish havolasi orqali
 // Versiya va doimiy havola. Internetga joylashda (deploy.mjs) versiya qo'yiladi, kalit esa ochiq koddan olib tashlanadi
-const APP_VERSION = '2026.11.16-1602';
+const APP_VERSION = '2026.11.18-0938';
 const APP_URL = 'https://ulfatjonqudratov85-commits.github.io/fot-rezerv/';
 const TABLE = 'treasury_state';
 const ROW_ID = 'main';
@@ -2204,6 +2219,11 @@ function computeOutflows(m, firmIn, br, c) {
   }
   return { byFirm, total, count };
 }
+/* Avans to'lov sanasi: sozlamadagi kun; u bank kuni bo'lmasa — undan oldingi eng yaqin bank kuni */
+function advDateOf(m, day, bankDates) {
+  const raw = `${m}-${pad(Math.min(day, daysIn(m)))}`;
+  return bankDates.filter(d => d <= raw).pop() || bankDates[0] || raw;
+}
 function computeMetrics(m) {
   const st = state.settings, F = st.accFirms.length;
   const entries = (state.entries[m] || []).slice().sort((a, b) => a.date.localeCompare(b.date) || (a.ts || 0) - (b.ts || 0));
@@ -2235,8 +2255,8 @@ function computeMetrics(m) {
   const basePace = B ? totalFund / B : totalFund;
   const needPace = ahead.length ? remaining / ahead.length : remaining;
 
-  const advDateRaw = `${m}-${pad(Math.min(cfg.advanceDay, daysIn(m)))}`;
-  const advDeadline = bankDates.filter(d => d <= advDateRaw).pop() || bankDates[0] || advDateRaw;
+  const advDeadline = advDateOf(m, cfg.advanceDay, bankDates);
+  const lastBankDay = bankDates[bankDates.length - 1] || `${m}-${pad(daysIn(m))}`;
   let cum = 0, advReachedOn = null, fullReachedOn = null;
   for (const e of entries) {
     cum += e.amount;
@@ -2295,6 +2315,7 @@ function computeMetrics(m) {
     advPace, advOverdue, todayNorm, normDriver, avgPace, forecast, forecastPct, planToDate, vsPlan, missed,
     firmIn, outflow: out, firmBal, status, statusText, started, recent, doneDate, task,
     cfg, branches: br, cfgSrc: cfgSource(m), cfgOwn: !!state.months[m],
+    lastBankDay, payPlan: { advance: advDeadline, remainder: lastBankDay, full: lastBankDay },   // har bir bosqichning rejadagi to'lov sanasi
     isPast: m < tm, isFuture: m > tm, isCurrent: m === tm
   };
 }
@@ -2540,7 +2561,7 @@ function renderStory() {
   const mile = (tone, ic, name, amount, when, st) => `<div class="mile" style="--tone:var(--${tone})"><span class="mile-ic">${icon(ic)}</span><div><div class="mile-n">${name}</div><div class="mile-a">${esc(amount)}</div><div class="mile-s">${st}</div></div><div class="mile-d"><small>muddat</small>${esc(when)}</div></div>`;
   let h = '';
   if (M.totalFund > 0) {
-    const lastBank = M.bankDates[M.bankDates.length - 1] || `${M.m}-${pad(daysIn(M.m))}`;
+    const lastBank = M.lastBankDay;
     if (M.advTarget > 0) {
       const st = M.advReached ? ['ok-m', 'checkC', `Tayyor${M.advReachedOn ? ` — ${dayLabel(M.advReachedOn)} kuni yig'ilgan` : ''}`]
         : M.advOverdue ? ['bad-m', 'alert', `Muddat o'tdi — ${bld(compactU(M.advNeed))} yetmaydi`]
@@ -3037,6 +3058,7 @@ function renderPayout() {
   $('#payAllocCard').classList.toggle('hidden', ov);
   $('#payFlowCard').classList.toggle('hidden', ov);
   $('#payDateWrap').classList.toggle('hidden', ov);
+  renderPayDate();
   $('#payRegStage').textContent = STAGE_LABEL[ui.stage];
   $('#payRegSub').textContent = ov ? "Har bir filial bo'yicha to'liq manzara: avans va asosiy qism holati. Holat belgisini bosing — o'sha bosqich ochiladi" : "Holat tugmasini bosing — to'lov summasi, firma va sana jurnalga yoziladi";
   if (ov) { renderOverview(); return; }
@@ -3083,7 +3105,8 @@ function renderPayout() {
     let firmCell, st;
     if (r.locked) { firmCell = '<span class="muted">—</span>'; st = `<span class="badge">${esc(r.locked)}</span>`; }
     else if (r.paid) {
-      firmCell = `<span class="firm-tag" style="--fc:${firmVar(r.firm)}"><i></i>${esc(firmName(r.firm))}</span>${isObj(r.rec) && r.rec.date ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(dmy(r.rec.date))} da o'tkazilgan</div>` : ''}`;
+      const pd = isObj(r.rec) && r.rec.date ? `${dmy(r.rec.date)} da o'tkazilgan` : '';
+      firmCell = `<span class="firm-tag" style="--fc:${firmVar(r.firm)}"><i></i>${esc(firmName(r.firm))}</span>${pd ? (present ? `<div class="pd-edit">${esc(pd)}</div>` : `<div><button type="button" class="pd-edit" data-action="pay-date-edit" data-key="${esc(r.key)}" title="To'lov sanasini o'zgartirish">${esc(pd)}${icon('edit')}</button></div>`) : ''}`;
       st = `<button class="st-btn paid" data-action="pay-toggle" data-key="${esc(r.key)}" ${present ? 'disabled' : ''} title="Bosing — to'lov belgisini olib tashlash">${icon('check')}O'tkazildi</button>`;
     } else if (r.need <= 0) { firmCell = '<span class="muted" style="font-size:12px">To\'lov kerak emas</span>'; st = `<span class="badge">${P.stage === 'advance' ? "Avans berilmaydi" : "To'lov yo'q"}</span>`; }
     else {
@@ -3122,7 +3145,7 @@ function renderOverview() {
     if (st.s === 'paid') return `<button class="pill-st ok" data-action="stage" data-v="${stage}" title="${esc(STAGE_LABEL[stage])} bosqichini ochish">to'langan${st.d ? ` · ${esc(dmy(st.d).slice(0, 5))}` : ''}</button>`;
     if (st.s === 'full') return `<button class="pill-st info" data-action="stage" data-v="full" title="Bir martalik bosqichni ochish">100% bilan</button>`;
     if (st.s === 'none') return `<span class="pill-st">to'lanmaydi</span>`;
-    return `<button class="pill-st warn" data-action="stage" data-v="${stage}" title="${esc(STAGE_LABEL[stage])} bosqichini ochish">kutilmoqda</button>`;
+    return `<button class="pill-st warn" data-action="stage" data-v="${stage}" title="${esc(STAGE_LABEL[stage])} bosqichini ochish · rejadagi to'lov sanasi ${esc(dmy(M.payPlan[stage]))}">kutilmoqda · ${esc(dmy(M.payPlan[stage]).slice(0, 5))}</button>`;
   };
   const q = ($('#paySearch').value || '').trim().toLowerCase();
   let rows = O.rows;
@@ -3380,6 +3403,12 @@ function switchTab(tab, silent) {
   });
   if (!silent && M) { if (tab === 'payout') renderPayout(); if (tab === 'branches') renderBranches(); if (tab === 'command') renderTrajectory(); }
 }
+function onNewDay(prev) {
+  const di = $('#inpDate'), wasToday = !editId && di.value === prev;
+  if (month === prev.slice(0, 7) && thisMonth() !== month) setMonth(thisMonth(), true);   // joriy oyda turgan edi — yangi oyga o'tamiz
+  if (wasToday) di.value = defaultDate();
+  renderAll();
+}
 function setMonth(m, keepForm = false) {
   if (!/^\d{4}-\d{2}$/.test(m)) return;
   month = m;
@@ -3564,8 +3593,42 @@ function setCalEdit(on) { calEdit = on; renderCalendar(); if (on) toast("Kunni b
 /* =========================================================
    PAYOUT ACTIONS
    ========================================================= */
-// To'lovlar shu sana bilan yoziladi (kechagi to'lovni bugun belgilash mumkin)
-function payDateVal() { const v = ($('#payDate') || {}).value || ''; return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : todayISO(); }
+/* To'lov sanasi — sozlamalarga bog'langan:
+   avans → shu oyning avans to'lov kuni (Sozlamalar), asosiy qism va bir yo'la → oyning oxirgi bank kuni.
+   Qo'lda boshqa sana tanlansa — shu oy va bosqich uchun eslab qolinadi; sozlama o'zgarib rejadagi sana
+   boshqa bo'lsa, qo'lda tanlangani bekor bo'ladi va yangi rejadagi sana olinadi. */
+const payDateManual = {};
+const payPlanDate = (stage = ui.stage, Mx = M) => Mx.payPlan[stage] || Mx.lastBankDay;
+function payDateSrcText(stage, plan, Mx = M) {
+  if (stage !== 'advance') return 'oyning oxirgi bank kuni';
+  const raw = `${Mx.m}-${pad(Math.min(Mx.cfg.advanceDay, daysIn(Mx.m)))}`;
+  return plan === raw ? 'sozlamadagi avans kuni' : `avans kuni ${+raw.slice(8)}-sana dam olish — oldingi bank kuni`;
+}
+function payDateInfo() {
+  const plan = payPlanDate(), o = payDateManual[`${month}_${ui.stage}`];
+  const v = o && o.plan === plan && /^\d{4}-\d{2}-\d{2}$/.test(o.v) ? o.v : plan;
+  return { v, plan, manual: v !== plan, src: v !== plan ? "qo'lda tanlangan" : payDateSrcText(ui.stage, plan) };
+}
+const payDateVal = () => payDateInfo().v;
+function renderPayDate() {
+  if (ui.stage === 'overview' || !M) return;
+  const I = payDateInfo(), inp = $('#payDate');
+  if (document.activeElement !== inp) inp.value = I.v;
+  const src = $('#payDateSrc'); src.textContent = I.src; src.classList.toggle('manual', I.manual);
+  const rb = $('#payDateReset'); rb.classList.toggle('hidden', !I.manual); rb.title = `Rejadagi sanaga qaytarish: ${dmy(I.plan)}`;
+}
+async function payEditDate(key) {
+  const rec = state.paidStatus[key]; if (!isObj(rec)) return;
+  const r = lastPayout && lastPayout.rows.find(x => x.key === key);
+  const ok = await confirmDlg({
+    title: "To'lov sanasini o'zgartirish",
+    body: `<b>${esc(r ? r.b.name : '')}</b> — ${esc(moneyU(recAmount(rec, 0)))}, ${esc(firmName(rec.firm ?? 0))}<div class="field" style="margin-top:14px"><label class="label" for="cfDate">To'lov sanasi</label><input type="date" class="input" id="cfDate" value="${esc(rec.date || '')}"></div>`,
+    ok: 'Saqlash'
+  });
+  const v = ($('#cfDate') || {}).value || '';
+  if (ok !== true || !/^\d{4}-\d{2}-\d{2}$/.test(v) || !isObj(state.paidStatus[key]) || state.paidStatus[key].date === v) return;
+  commit(s => { s.paidStatus[key] = { ...s.paidStatus[key], date: v }; }, { toast: `${r ? `${r.b.name}: ` : ''}to'lov sanasi ${dmy(v)} ga o'zgartirildi` });
+}
 async function payToggle(key) {
   if (ui.stage === 'overview') return;
   const P = computePayout(M, ui.stage);
@@ -3585,7 +3648,7 @@ async function payToggle(key) {
   if (r.need <= 0) return;
   const d = payDateVal();
   commit(s => { s.paidStatus[key] = { amount: r.need, firm: r.firm, date: d, ts: Date.now() }; },
-    { toast: `${r.b.name}: ${moneyU(r.need)} o'tkazildi (${firmName(r.firm)}${d !== todayISO() ? `, ${dmy(d)}` : ''})` });
+    { toast: `${r.b.name}: ${moneyU(r.need)} o'tkazildi — ${firmName(r.firm)}, ${dmy(d)}` });
   if (r.short) toast(`${firmName(r.firm)} hisobida mablag' yetarli emas — qoldiqni tekshiring`, { type: 'warn', timeout: 5000 });
   if (P.pending.length === 1) toast(`${STAGE_LABEL[ui.stage]}: barcha filiallarga to'lov yakunlandi`, { type: 'ok', timeout: 6000 });
 }
@@ -3596,7 +3659,7 @@ async function payAll() {
   const short = P.coverage < -0.5;
   const ok = await confirmDlg({
     title: `${STAGE_LABEL[ui.stage]}: barchasini to'lash`,
-    body: `<b>${P.pending.length}</b> ta filialga jami <b>${esc(moneyU(P.outstanding))}</b> o'tkazildi deb belgilanadi (to'lov sanasi: <b>${esc(dmy(payDateVal()))}</b>).${short ? `<br><br><span class="bad-t">Diqqat: hisoblarda <b>${esc(moneyU(-P.coverage))}</b> yetishmaydi. Baribir belgilansinmi?</span>` : ''}`,
+    body: `<b>${P.pending.length}</b> ta filialga jami <b>${esc(moneyU(P.outstanding))}</b> o'tkazildi deb belgilanadi.<br>To'lov sanasi: <b>${esc(dmy(payDateVal()))}</b> <span class="muted">(${esc(payDateInfo().src)})</span>.${short ? `<br><br><span class="bad-t">Diqqat: hisoblarda <b>${esc(moneyU(-P.coverage))}</b> yetishmaydi. Baribir belgilansinmi?</span>` : ''}`,
     ok: "Ha, to'landi", danger: short
   });
   if (ok !== true) return;
@@ -3794,8 +3857,9 @@ function exportPayout() {
     return;
   }
   const P = computePayout(M, ui.stage), st = state.settings;
-  const rows = [['№', 'Filial', 'Filial hisob raqami', "To'lovchi firma", 'Firma hisob raqami', 'Bosqich', "Summa (so'm)", 'Holat', "To'langan sana"]];
-  P.rows.forEach(r => rows.push([r.idx + 1, r.b.name, r.b.account || '', r.firm != null ? firmName(r.firm) : '', r.firm != null ? st.firmAccounts[r.firm] || '' : '', STAGE_LABEL[ui.stage], r.locked ? 0 : r.need, r.locked ? r.locked : r.paid ? "O'tkazilgan" : 'Kutilmoqda', isObj(r.rec) && r.rec.date ? dmy(r.rec.date) : '']));
+  const plan = dmy(payDateVal());
+  const rows = [['№', 'Filial', 'Filial hisob raqami', "To'lovchi firma", 'Firma hisob raqami', 'Bosqich', "Summa (so'm)", 'Holat', "To'lov sanasi"]];
+  P.rows.forEach(r => rows.push([r.idx + 1, r.b.name, r.b.account || '', r.firm != null ? firmName(r.firm) : '', r.firm != null ? st.firmAccounts[r.firm] || '' : '', STAGE_LABEL[ui.stage], r.locked ? 0 : r.need, r.locked ? r.locked : r.paid ? "O'tkazilgan" : 'Kutilmoqda', r.paid ? (isObj(r.rec) && r.rec.date ? dmy(r.rec.date) : '') : r.locked || r.need <= 0 ? '' : `${plan} (reja)`]));
   rows.push([], ['', 'JAMI', '', '', '', '', P.stageTotal, '', '']);
   downloadCSV(`FOT_Taqsimot_${ui.stage}_${month}.csv`, rows);
 }
@@ -3831,9 +3895,9 @@ function printPayout() {
   const byFirm = st.accFirms.map((n, i) => ({ n, acc: st.firmAccounts[i] || '', v: sum(rows.filter(r => r.firm === i).map(r => r.need)), c: rows.filter(r => r.firm === i).length })).filter(x => x.c);
   $('#printArea').innerHTML = `
     <h1>TO'LOV REESTRI</h1>
-    <div class="sub">Oylik ish haqi — ${esc(STAGE_LABEL[ui.stage])} · ${esc(monthName(month))} · Tuzilgan sana: ${esc(dmy(todayISO()))}</div>
+    <div class="sub">Oylik ish haqi — ${esc(STAGE_LABEL[ui.stage])} · ${esc(monthName(month))} · To'lov sanasi: ${esc(dmy(payDateVal()))} · Tuzilgan sana: ${esc(dmy(todayISO()))}</div>
     <table><thead><tr><th>№</th><th>Qabul qiluvchi filial</th><th>Filial hisob raqami</th><th>To'lovchi firma</th><th>Firma hisob raqami</th><th class="r">Summa (so'm)</th><th class="c">Holat</th></tr></thead>
-    <tbody>${rows.map((r, i) => `<tr><td class="c">${i + 1}</td><td>${esc(r.b.name)}</td><td>${esc(r.b.account || '')}</td><td>${esc(firmName(r.firm))}</td><td>${esc(st.firmAccounts[r.firm] || '')}</td><td class="r">${g(r.need)}</td><td class="c">${r.paid ? "O'tkazilgan" : 'Kutilmoqda'}</td></tr>`).join('')}</tbody>
+    <tbody>${rows.map((r, i) => `<tr><td class="c">${i + 1}</td><td>${esc(r.b.name)}</td><td>${esc(r.b.account || '')}</td><td>${esc(firmName(r.firm))}</td><td>${esc(st.firmAccounts[r.firm] || '')}</td><td class="r">${g(r.need)}</td><td class="c">${r.paid ? `O'tkazilgan${isObj(r.rec) && r.rec.date ? ` ${esc(dmy(r.rec.date))}` : ''}` : 'Kutilmoqda'}</td></tr>`).join('')}</tbody>
     <tfoot><tr><td colspan="5">JAMI: ${rows.length} ta o'tkazma</td><td class="r">${g(total)}</td><td></td></tr></tfoot></table>
     <div class="words">Jami summa: ${esc(words(total))}</div>
     <table style="margin-top:16px;width:70%"><thead><tr><th>To'lovchi firma</th><th>Hisob raqami</th><th class="c">O'tkazmalar</th><th class="r">Summa (so'm)</th></tr></thead>
@@ -3850,8 +3914,11 @@ function printPayout() {
    ========================================================= */
 let setDraft = null;
 function openSettings(tab = 'general') {
-  setDraft = { firms: state.settings.accFirms.map((n, i) => ({ name: n, acc: state.settings.firmAccounts[i] || '', orig: i })) };
   const mc = M.cfg;                                   // tanlangan oyning parametrlari
+  // Oyna ochilgandagi qiymatlar: saqlashda faqat foydalanuvchi o'zi o'zgartirgan maydonlar yoziladi
+  // (shu orada boshqa qurilmadan kelgan o'zgarishlar bekor bo'lib ketmasligi uchun)
+  setDraft = { firms: state.settings.accFirms.map((n, i) => ({ name: n, acc: state.settings.firmAccounts[i] || '', orig: i })), cfg0: { advancePct: mc.advancePct, advanceDay: mc.advanceDay, usdRate: mc.usdRate } };
+  setDraft.firms0 = firmsKey(setDraft.firms);
   $('#setMonthName').textContent = monthName(month);
   $('#setAdvPct').value = mc.advancePct;
   $('#setAdvDay').value = mc.advanceDay;
@@ -3862,6 +3929,7 @@ function openSettings(tab = 'general') {
   renderSetFirms(); renderSetInfo(); setSettingsTab(tab); renderSync();
   const d = $('#dlgSettings'); if (!d.open) d.showModal();
 }
+const firmsKey = list => JSON.stringify(list.map(f => [String(f.name).trim(), String(f.acc).replace(/\s/g, ''), f.orig]));
 function setSettingsTab(tab) {
   $$('#dlgSettings [data-action="set-tab"]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.v === tab)));
   $$('#dlgSettings [data-pane]').forEach(p => p.classList.toggle('hidden', p.dataset.pane !== tab));
@@ -3885,9 +3953,18 @@ function renderSetFirms() {
 function renderSetInfo() {
   const Mx = M || computeMetrics(month);
   $('#setBankDays').textContent = `${Mx.B} kun (${monthName(month)})`;
-  $('#setAdvDeadline').textContent = Mx.advTarget > 0 ? dayLabel(Mx.advDeadline) : '—';
+  // Jonli ko'rinish: maydonga yangi qiymat yozilishi bilan natija shu yerda ko'rinadi (saqlashdan oldin)
+  const pIn = $('#setAdvPct').value, dIn = $('#setAdvDay').value;
+  const pc = pIn !== '' && Number(pIn) >= 0 && Number(pIn) <= 100 ? Number(pIn) : Mx.cfg.advancePct;
+  const dy = Number.isInteger(Number(dIn)) && Number(dIn) >= 1 && Number(dIn) <= 31 ? Number(dIn) : Mx.cfg.advanceDay;
+  const c2 = { ...Mx.cfg, advancePct: pc, advanceDay: dy };
+  const advT = sum(Mx.branches.map(b => advOf(b, c2))), advD = advDateOf(month, dy, Mx.bankDates);
+  const shifted = advD !== `${month}-${pad(Math.min(dy, daysIn(month)))}`;
+  $('#setAdvDeadline').textContent = advT > 0 ? `${dayLabel(advD)}, ${wdName(advD).toLowerCase()}${shifted ? ' (avans kuni dam olishga to\'g\'ri keldi — oldingi bank kuni)' : ''}` : 'avans berilmaydi';
+  $('#setPayDay').textContent = `${dayLabel(Mx.lastBankDay)}, ${wdName(Mx.lastBankDay).toLowerCase()} (oyning oxirgi bank kuni)`;
   $('#setFund').textContent = moneyU(Mx.totalFund);
-  $('#setAdvEff').textContent = `${moneyU(Mx.advTarget)} (${fmtP(Mx.advPct)}%)`;
+  $('#setAdvEff').textContent = `${moneyU(advT)} (${fmtP(Mx.totalFund > 0 ? (advT / Mx.totalFund) * 100 : pc)}%)`;
+  $('#setPreview').classList.toggle('hidden', pc === Mx.cfg.advancePct && dy === Mx.cfg.advanceDay);
   $('#setAdvCustom').textContent = `${Mx.branches.filter(b => advMode(b) !== 'default').length} ta`;
   renderCfgBar();
   const cnt = s => `${Object.keys(s.entries || {}).length} oy · ${sum(Object.values(s.entries || {}).map(l => (Array.isArray(l) ? l.length : 0)))} yozuv`;
@@ -3919,11 +3996,11 @@ function settingsSave() {
   const map = {}; firms.forEach((f, ni) => { if (f.orig != null) map[f.orig] = ni; });
   const remap = firms.length !== oldF || Object.keys(map).some(k => map[k] !== Number(k));
   const credsChanged = $('#setUrl').value.trim().replace(/\/+$/, '') !== (creds.url || '') || $('#setKey').value.trim() !== (creds.key || '');
-  const c0 = M.cfg, ch = {};                          // oy parametrlari: faqat o'zgarganlari, tanlangan doirada
+  const c0 = setDraft.cfg0, ch = {};                  // faqat foydalanuvchi shu oynada o'zgartirgan parametrlar, tanlangan doirada
   if (adv !== c0.advancePct) ch.advancePct = adv;
   if (day !== c0.advanceDay) ch.advanceDay = day;
   if (usd !== c0.usdRate) ch.usdRate = usd;
-  const firmsSame = !remap && firms.every((f, i) => f.name === state.settings.accFirms[i] && f.acc === (state.settings.firmAccounts[i] || ''));
+  const firmsSame = firmsKey(firms) === setDraft.firms0;
   if (!Object.keys(ch).length && firmsSame) {         // hech narsa o'zgarmagan — ortiqcha yozuv yaratmaymiz
     $('#dlgSettings').close();
     if (credsChanged) cloudConnectFromForm();
@@ -3931,6 +4008,7 @@ function settingsSave() {
   }
   commit(s => {
     if (Object.keys(ch).length) forScope(s, c => Object.assign(c, ch));
+    if (firmsSame) return;                            // firmalar ro'yxatiga tegilmagan
     s.settings.accFirms = firms.map(f => f.name); s.settings.firmAccounts = firms.map(f => f.acc);
     if (remap) {
       Object.values(s.entries).forEach(l => l.forEach(e => { e.firmIndex = map[e.firmIndex] ?? 0; }));
@@ -4087,6 +4165,8 @@ const ACTIONS = {
   'pay-all': () => payAll(),
   'pay-reset': () => payReset(),
   'pay-filter': el => { ui.payFilter = el.dataset.v; saveUI(); renderPayout(); },
+  'pay-date-reset': () => { delete payDateManual[`${month}_${ui.stage}`]; renderPayDate(); },
+  'pay-date-edit': el => payEditDate(el.dataset.key),
   'export-payout': () => exportPayout(),
   'print-payout': () => printPayout(),
   'branch-add': () => branchAdd(),
@@ -4139,6 +4219,7 @@ function bindEvents() {
   $('#entryForm').addEventListener('submit', submitEntry);
   $('#inpAmount').addEventListener('input', e => { formatMoneyInput(e.target); updateAmountHints(); });
   $('#inpDate').addEventListener('change', () => { renderFormMeta(); renderCalendar(); });
+  ['#setAdvPct', '#setAdvDay'].forEach(s => $(s).addEventListener('input', renderSetInfo));
   // «Agar…» surgichi: natija va grafikdagi bashorat chizig'i shu zahoti yangilanadi
   let simRaf = 0;
   $('#simRange').addEventListener('input', e => { ui.simPace = (simMax() * Number(e.target.value)) / 200; renderSim(); cancelAnimationFrame(simRaf); simRaf = requestAnimationFrame(renderTrajectory); });
@@ -4157,6 +4238,11 @@ function bindEvents() {
   document.addEventListener('change', e => {
     const t = e.target;
     if (t.matches('.cell-input[data-field]')) setTimeout(() => branchEdit(t), 0);
+    else if (t.id === 'payDate') {
+      const k = `${month}_${ui.stage}`;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(t.value)) payDateManual[k] = { v: t.value, plan: payPlanDate() }; else delete payDateManual[k];
+      renderPayDate();
+    }
     else if (t.id === 'readdSel') { if (t.value) branchReadd(t.value); t.value = ''; }
     else if (t.matches('select[data-action="pay-firm"]')) { const key = t.dataset.key, v = parseInt(t.value, 10); commit(s => { s.customVaultAssign[key] = v; }, {}); }
   });
@@ -4230,9 +4316,11 @@ function bindEvents() {
   if (window.ResizeObserver) { const ro = new ResizeObserver(reflow); ro.observe($('#trajChart')); ro.observe($('#flow')); }
   else window.addEventListener('resize', reflow);
   // Kun almashsa (yarim tun) — qayta hisoblash
+  // Kun almashganda (yarim tun, uyqudan chiqqan kompyuter): «bugun», forma sanasi va oy yangilanadi
   let lastDay = todayISO();
-  setInterval(() => { tickClock(); const t = todayISO(); if (t !== lastDay) { lastDay = t; renderAll(); } }, 20000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && todayISO() !== lastDay) { lastDay = todayISO(); renderAll(); } });
+  const dayCheck = () => { const t = todayISO(); if (t !== lastDay) { const p = lastDay; lastDay = t; onNewDay(p); } };
+  setInterval(() => { tickClock(); dayCheck(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) dayCheck(); });
 }
 
 /* =========================================================
@@ -4289,7 +4377,6 @@ function init() {
   applyTheme();
   bindEvents();
   $('#inpDate').value = defaultDate();
-  $('#payDate').value = todayISO();
   switchTab(ui.tab, true);
   renderAll();
   renderFormMeta();
